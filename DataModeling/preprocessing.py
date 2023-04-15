@@ -111,11 +111,11 @@ def process2():
     for f in fNames:
         nums = re.findall('\d+', re.findall(pattern, f)[0])
         fromMin = min(fromMin, int(nums[0]))
-        toMax = max(toMax, int(nums[0]))
+        toMax = max(toMax, int(nums[1]))
 
     title = f'F{fromMin}_T{toMax}'
 
-    fileCreate(df, 3, title)
+    fileCreate(df, '재료사전', title)
 
 print('1. 소요시간, 난이도 필터링 및 재료 빈도수')
 print('2. 재료 빈도수 취합')
