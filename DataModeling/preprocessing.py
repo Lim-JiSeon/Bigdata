@@ -33,15 +33,17 @@ def fileCreate(dt, val, fileName):
     #except:
     #    pass
 
-    pattern = r'F\d+_T\d+'
-    fName = re.findall(pattern, fileName)[0]
-
-    fName = f'{fName}_{val}.xlsx'
-
     cols = [['Key', '요리명', '인분', '소요시간', '난이도', '재료', '조리법'],
             ['재료', '빈도수'],
             ['재료', '빈도수']]
     df = pd.DataFrame(dt, columns = cols[val - 1])
+
+    pattern = r'F\d+_T\d+'
+    fName = re.findall(pattern, fileName)[0]
+
+    if val == 3:
+        val = '재료사전'
+    fName = f'{fName}_{val}.xlsx'
 
     root = Tk()
     root.withdraw()
@@ -115,7 +117,7 @@ def process2():
 
     title = f'F{fromMin}_T{toMax}'
 
-    fileCreate(df, '재료사전', title)
+    fileCreate(df, 3, title)
 
 print('1. 소요시간, 난이도 필터링 및 재료 빈도수')
 print('2. 재료 빈도수 취합')
