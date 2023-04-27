@@ -13,12 +13,12 @@ def fileOpen(opt):
     root.withdraw()
 
     if opt == 1:    # 엑셀파일 한개
-        fileName = filedialog.askopenfilename(title ='Select Excel File', initialdir = '/', filetypes = (('Excel Files', '*.xlsx'), ('All Files', '*.*')))
+        fileName = filedialog.askopenfilename(title ='Select Excel File', initialdir = os.getcwd(), filetypes = (('Excel Files', '*.xlsx'), ('All Files', '*.*')))
         df = pd.read_excel(fileName)
         dt = df.values.tolist()
     if opt == 2:    # 여러 파일 선택
         dt = []
-        fileName = filedialog.askopenfilenames(title ='Select Excel Files', initialdir = '/', filetypes = (('Excel Files', '*.xlsx'), ('All Files', '*.*')))
+        fileName = filedialog.askopenfilenames(title ='Select Excel Files', initialdir = os.getcwd(), filetypes = (('Excel Files', '*.xlsx'), ('All Files', '*.*')))
         for f in fileName:
             df = pd.read_excel(f)
             dt.append(df.values.tolist())
@@ -48,44 +48,45 @@ def fileCreate(dt, val, fileName):
     root = Tk()
     root.withdraw()
 
-    fName = filedialog.asksaveasfilename(initialdir = '/', initialfile = fName)
+    fName = filedialog.asksaveasfilename(initialdir = os.getcwd(), initialfile = fName)
     root.destroy()
 
     df.to_excel(fName, index = False)
 
 def process1(): # 한번에 여러 파일 읽도록 수정 예정
-    dt, fName = fileOpen(1)
+    dt, fName = fileOpen(2)
 
-    subDt = []
-    for i in dt:
-        min = i[3].find('분')
-        if min != -1 and int(i[3][ : min]) <= 30 and i[4] in ['아무나', '초급']:
-            subDt.append(i)
+    for c, d in enumerate(dt):
+        subDt = []
+        for i in d:
+            min = i[3].find('분')
+            if min != -1 and int(i[3][ : min]) <= 30 and i[4] in ['아무나', '초급']:
+                subDt.append(i)
 
-    fileCreate(subDt, 1)
-    subDt = np.array(subDt)
+        #fileCreate(subDt, 1, fName)
+        subDt = np.array(subDt)
 
-    ingred = np.transpose(subDt[ : , 5 : 6]).tolist()[0]
-    ingred_dict = []
-    for i in ingred:
-        temp = ast.literal_eval(i)
-        ingred_dict.append(temp)
+        ingred = np.transpose(subDt[ : , 5 : 6]).tolist()[0]
+        ingred_dict = []
+        for i in ingred:
+            temp = ast.literal_eval(i)
+            ingred_dict.append(temp)
 
-    ingreds = []
-    for i in ingred_dict:
-        for j in i:
-            ingreds.append(list(j.keys())[0])
+        ingreds = []
+        for i in ingred_dict:
+            for j in i:
+                ingreds.append(list(j.keys())[0].replace(' ', ''))  # 재료명의 공백 제거
 
-    counts = Counter(ingreds)
+        counts = Counter(ingreds)
 
-    counts_key = list(counts.keys())
-    counts_val = list(counts.values())
+        counts_key = list(counts.keys())
+        counts_val = list(counts.values())
 
-    param = []
-    for i in range(len(counts_key)):
-        param.append([counts_key[i], counts_val[i]])  
+        param = []
+        for i in range(len(counts_key)):
+            param.append([counts_key[i], counts_val[i]])  
     
-    fileCreate(param, 2, fName)
+        fileCreate(param, 2, fName[c])
 
 def process2():
     dt, fNames = fileOpen(2)
@@ -94,6 +95,11 @@ def process2():
     counts = []
     for d in dt:
         d = np.array(d).transpose().tolist()
+
+        # 재료명의 공백 제거
+        #for i in range(len(d[0])):
+        #    d[0][i] = d[0][i].replace(' ', '')
+
         for i, c in zip(d[0], d[1]):
             if i in ingreds:
                 idx = ingreds.index(i)
