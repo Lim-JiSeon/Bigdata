@@ -54,7 +54,7 @@ def process():
         for dish in dishes:
             dishName = dish[1].split()
 
-            a = dishNameExtract(dishName, ingreds)
+            a = dishNameExtract(dishName, ingreds)  
             if a == []:
                a = [None]
 
