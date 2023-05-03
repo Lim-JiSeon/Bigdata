@@ -43,7 +43,7 @@ def fileCreate(dt, val, fileName):
 
     if val == 3:
         val = '재료사전'
-    fName = f'{fName}_{val}.xlsx'
+    fName = f'{val}_{fName}.xlsx'
 
     root = Tk()
     root.withdraw()
@@ -130,10 +130,7 @@ print('2. 재료 빈도수 취합')
 print('선택 :', end = ' ')
 n = int(input())
 
-while 1:
-    if n == 1:
-        process1()
-    else:
-        break
-if n == 2:
+if n == 1:
+    process1()
+elif n == 2:
     process2()
