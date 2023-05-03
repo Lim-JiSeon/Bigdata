@@ -105,9 +105,10 @@ while not is_pages_end: # 1301~1400, 3501~4929 데이터 남음
                     recipeInfo.append(f'{c + 1}. {i.contents[0].contents[0].text}')
                     if len(i.contents[0].contents) >= 2:
                         recipeIng.append(f'{c + 1}. {i.contents[0].contents[1].text}')
-                    img_tag = i.contents[1].find('img')
-                    src = img_tag['src']
-                    recipeImg.append(f'{c + 1}. {src}')
+                    imgTag = i.contents[1].find('img')
+                    if imgTag != -1:
+                        src = imgTag['src']
+                        recipeImg.append(f'{c + 1}. {src}')
 
                 subData.append([key, mainSrc, title, sumInfo1, sumInfo2, sumInfo3, ingredInfo, recipeInfo, recipeIng, recipeImg])
 
