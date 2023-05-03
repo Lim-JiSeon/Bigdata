@@ -88,8 +88,8 @@ while not is_pages_end: # 1301~1400, 3501~4929 데이터 남음
                         ingreds = ingreds_html.find_all('a')
                         for i in range(0, len(ingreds), 2):
                             ingred = ingreds[i].text.split()
-                            amount = (ingred[2] if len(ingred) > 2 else 'X')   
-                            ingredInfo.append({ingred[0] : amount})
+                            ingred.remove('구매')
+                            ingredInfo.append(ingred)
 
                 # 노하우(similar) 추가 ?
 
@@ -97,7 +97,7 @@ while not is_pages_end: # 1301~1400, 3501~4929 데이터 남음
                 recipeLine = recipe.find_all('div', {'id' : re.compile('^stepD')})
                 recipeInfo = []     # 조리법
                 for c, i in enumerate(recipeLine):
-                    recipeInfo.append({c + 1 : i.text})
+                    recipeInfo.append(f'{c + 1}. {i.text}')
 
                 subData.append([key, title, sumInfo1, sumInfo2, sumInfo3, ingredInfo, recipeInfo])
 
