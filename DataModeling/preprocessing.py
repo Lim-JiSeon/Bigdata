@@ -12,7 +12,7 @@ def fileOpen(opt):
     root = Tk()
     root.withdraw()
 
-    if opt == 1:    # 엑셀파일 한개
+    if opt == 1:    # 엑셀파일 한개, 현재 미사용
         fileName = filedialog.askopenfilename(title ='Select Excel File', initialdir = os.getcwd(), filetypes = (('Excel Files', '*.xlsx'), ('All Files', '*.*')))
         df = pd.read_excel(fileName)
         dt = df.values.tolist()
@@ -33,7 +33,7 @@ def fileCreate(dt, val, fileName):
     #except:
     #    pass
 
-    cols = [['Key', '요리명', '인분', '소요시간', '난이도', '재료', '조리법'],
+    cols = [['Key', '메인사진' '요리명', '인분', '소요시간', '난이도', '재료', '조리법', '조리재료', '조리사진'],
             ['재료', '빈도수'],
             ['재료', '빈도수']]
     df = pd.DataFrame(dt, columns = cols[val - 1])
@@ -59,14 +59,14 @@ def process1(): # 한번에 여러 파일 읽도록 수정 예정
     for c, d in enumerate(dt):
         subDt = []
         for i in d:
-            min = i[3].find('분')
-            if min != -1 and int(i[3][ : min]) <= 30 and i[4] in ['아무나', '초급']:
+            min = i[4].find('분')
+            if min != -1 and int(i[4][ : min]) <= 30 and i[5] in ['아무나', '초급']:
                 subDt.append(i)
 
         #fileCreate(subDt, 1, fName)
         subDt = np.array(subDt)
 
-        ingred = np.transpose(subDt[ : , 5 : 6]).tolist()[0]
+        ingred = np.transpose(subDt[ : , 6 : 7]).tolist()[0]
         ingred_dict = []
         for i in ingred:
             temp = ast.literal_eval(i)

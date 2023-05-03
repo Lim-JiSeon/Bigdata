@@ -75,6 +75,9 @@ while not is_pages_end: # 1301~1400, 3501~4929 데이터 남음
                     lCount += 1
                     continue
 
+                mainImg = subSoup.select_one('#main_thumbs')
+                mainSrc = mainImg['src']
+
                 title = getText(subSoup.select_one('#contents_area > div.view2_summary.st3 > h3'))  # 요리명
 
                 sumInfo1 = getText(subSoup.select_one('#contents_area > div.view2_summary.st3 > div.view2_summary_info > span.view2_summary_info1'))    # 인분
@@ -96,10 +99,17 @@ while not is_pages_end: # 1301~1400, 3501~4929 데이터 남음
                 recipe = subSoup.select_one('#contents_area')
                 recipeLine = recipe.find_all('div', {'id' : re.compile('^stepD')})
                 recipeInfo = []     # 조리법
+                recipeIng = []      # 조리 재료
+                recipeImg = []      # 조리 사진
                 for c, i in enumerate(recipeLine):
-                    recipeInfo.append(f'{c + 1}. {i.text}')
+                    recipeInfo.append(f'{c + 1}. {i.contents[0].contents[0].text}')
+                    if len(i.contents[0].contents) >= 2:
+                        recipeIng.append(f'{c + 1}. {i.contents[0].contents[1].text}')
+                    img_tag = i.contents[1].find('img')
+                    src = img_tag['src']
+                    recipeImg.append(f'{c + 1}. {src}')
 
-                subData.append([key, title, sumInfo1, sumInfo2, sumInfo3, ingredInfo, recipeInfo])
+                subData.append([key, mainSrc, title, sumInfo1, sumInfo2, sumInfo3, ingredInfo, recipeInfo, recipeIng, recipeImg])
 
             else:
                 print('')
