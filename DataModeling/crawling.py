@@ -102,13 +102,16 @@ while not is_pages_end: # 1301~1400, 3501~4929 데이터 남음
                 recipeIng = []      # 조리 재료
                 recipeImg = []      # 조리 사진
                 for c, i in enumerate(recipeLine):
-                    recipeInfo.append(f'{c + 1}. {i.contents[0].contents[0].text}')
-                    if len(i.contents[0].contents) >= 2:
-                        recipeIng.append(f'{c + 1}. {i.contents[0].contents[1].text}')
-                    imgTag = i.contents[1].find('img')
-                    if imgTag != -1:
-                        src = imgTag['src']
-                        recipeImg.append(f'{c + 1}. {src}')
+                    if i.contents[0].contents[0].text != '':
+                        recipeInfo.append(f'{c + 1}. {i.contents[0].contents[0].text}')
+                    if len(i.contents) >= 2:
+                        if len(i.contents[0].contents) >= 2:
+                            if i.contents[0].contents[1].text != '':
+                                recipeIng.append(f'{c + 1}. {i.contents[0].contents[1].text}')
+                        imgTag = i.contents[1].find('img')
+                        if imgTag != -1:
+                            src = imgTag['src']
+                            recipeImg.append(f'{c + 1}. {src}')
 
                 subData.append([key, mainSrc, title, sumInfo1, sumInfo2, sumInfo3, ingredInfo, recipeInfo, recipeIng, recipeImg])
 
