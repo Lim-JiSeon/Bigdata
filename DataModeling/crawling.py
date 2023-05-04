@@ -43,10 +43,10 @@ def makeXlsx(dt):
         except:
             retry -= 1
 
-page = 0                    # 4/6 기준 4928이 최대
+page = 1                    # 4/6 기준 4928이 최대
 dCount = 0                  # 누적 데이터
 lCount = 0                  # 손실 데이터(삭제 추정)
-divBy = 10                 # 엑셀 저장 단위 페이지 수
+divBy = 100                 # 엑셀 저장 단위 페이지 수
 xCount = int(page / divBy)  # 만들어진 엑셀파일 수
 
 data = []
@@ -102,15 +102,16 @@ while not is_pages_end: # 1301~1400, 3501~4929 데이터 남음
                 recipeIng = []      # 조리 재료
                 recipeImg = []      # 조리 사진
                 for c, i in enumerate(recipeLine):
-                    rr = ''
-                    for t in i.contents[0].contents:
-                        rr += t.text
-                    recipeInfo.append(f'{c + 1}. {rr}')
+                    fullL = ''
+                    for recipeL in i.contents[0].contents:
+                        fullL += recipeL.text + ' '
+                    recipeInfo.append(f'{c + 1}. {fullL}')
 
-                    imgTag = i.contents[1].find('img')
-                    if imgTag != -1:
-                        src = imgTag['src']
-                        recipeImg.append(f'{c + 1}. {src}')
+                    if len(i.contents) > 1:
+                        imgTag = i.contents[1].find('img')
+                        if imgTag != -1:
+                            src = imgTag['src']
+                            recipeImg.append(f'{c + 1}. {src}')
 
                 subData.append([key, mainSrc, title, sumInfo1, sumInfo2, sumInfo3, ingredInfo, recipeInfo, recipeImg])
 
