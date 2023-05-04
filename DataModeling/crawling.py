@@ -17,7 +17,7 @@ def trySoup(url):
     while tryCount:
         try:
             content = requests.get(url).content
-            return BeautifulSoup(content, 'html.parser')
+            return BeautifulSoup(content.decode('utf-8', 'replace'), 'html.parser')
         except:
             tryCount -= 1
             print('\n네트워크 확인 (' + str(tryCount) + ')\n')
@@ -43,7 +43,7 @@ def makeXlsx(dt):
         except:
             retry -= 1
 
-page = 0                    # 4/6 기준 4928이 최대
+page = 138                    # 4/6 기준 4928이 최대
 dCount = 0                  # 누적 데이터
 lCount = 0                  # 손실 데이터(삭제 추정)
 divBy = 100                 # 엑셀 저장 단위 페이지 수
@@ -59,7 +59,7 @@ while not is_pages_end: # 1301~1400, 3501~4929 데이터 남음
         soup = trySoup(url)
         print('페이지 :', page)
 
-        idx = 0
+        idx = 17
         subData = []
         while 1:
             idx += 1
