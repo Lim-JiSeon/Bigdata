@@ -33,7 +33,7 @@ def fileCreate(dt, val, fileName):
     #except:
     #    pass
 
-    cols = [['Key', '메인사진', '요리명', '인분', '소요시간', '난이도', '재료', '조리법', '조리재료', '조리사진'],
+    cols = [['Key', '메인사진', '요리명', '인분', '소요시간', '난이도', '재료', '조리법', '조리사진'],
             ['재료', '빈도수'],
             ['재료', '빈도수']]
     df = pd.DataFrame(dt, columns = cols[val - 1])
