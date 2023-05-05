@@ -51,7 +51,7 @@ xCount = int(page / divBy)  # ¸¸µé¾îÁø ¿¢¼¿ÆÄÀÏ ¼ö
 
 data = []
 is_pages_end = False
-while not is_pages_end: # 1301~1400, 3501~4929 µ¥ÀÌÅÍ ³²À½
+while not is_pages_end:
     is_data_apd = False
     page += 1
     url = 'https://www.10000recipe.com/recipe/list.html?order=reco&page=' + str(page)
@@ -79,6 +79,7 @@ while not is_pages_end: # 1301~1400, 3501~4929 µ¥ÀÌÅÍ ³²À½
                 mainSrc = mainImg['src']
 
                 title = getText(subSoup.select_one('#contents_area > div.view2_summary.st3 > h3'))  # ¿ä¸®¸í
+                title = re.sub(r'[^a-zA-Z¤¡-¤¾¤¿-¤Ó°¡-ÆR0-9\s]+', '', title)
 
                 sumInfo1 = getText(subSoup.select_one('#contents_area > div.view2_summary.st3 > div.view2_summary_info > span.view2_summary_info1'))    # ÀÎºĞ
                 sumInfo2 = getText(subSoup.select_one('#contents_area > div.view2_summary.st3 > div.view2_summary_info > span.view2_summary_info2'))    # ¼Ò¿ä½Ã°£
@@ -101,6 +102,7 @@ while not is_pages_end: # 1301~1400, 3501~4929 µ¥ÀÌÅÍ ³²À½
                 recipeInfo = []     # Á¶¸®¹ı
                 recipeIng = []      # Á¶¸® Àç·á
                 recipeImg = []      # Á¶¸® »çÁø
+
                 for c, i in enumerate(recipeLine):
                     fullL = ''
                     for recipeL in i.contents[0].contents:
@@ -131,7 +133,7 @@ while not is_pages_end: # 1301~1400, 3501~4929 µ¥ÀÌÅÍ ³²À½
                 makeXlsx(data)
                 data = []
 
-        elif not lCount:
+        else:
             is_pages_end = True
 
             print('°á°ú¾øÀ½\n')
@@ -145,6 +147,7 @@ while not is_pages_end: # 1301~1400, 3501~4929 µ¥ÀÌÅÍ ³²À½
             print('\n¿À·ù¹ß»ıÀ¸·Î ÀÎÇÑ ¼öÁıÁ¾·á\n')
 
 if data != []:
+    page -= 1
     makeXlsx(data)
 
 print('ÇÁ·Î±×·¥ Á¾·á')
