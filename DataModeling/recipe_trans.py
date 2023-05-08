@@ -43,6 +43,7 @@ for i in range(0, len(recipe)):
   except:
     df["recipe_kor"].iloc[i] = "조리법 없음"
 
+#저장
 df.to_excel("레시피_전처리.xlsx", encoding = 'utf-8')
 
 
