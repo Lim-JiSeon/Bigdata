@@ -83,6 +83,7 @@ def process1(): # 한번에 여러 파일 읽도록 수정 예정
             for j in i:
                 ingreds.append(j)  # 재료명의 공백 제거
 
+        # count 및 재료명 저장 부분 수정 필요
         counts = Counter(ingreds)
 
         counts_key = list(counts.keys())
