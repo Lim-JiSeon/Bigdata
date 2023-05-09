@@ -57,25 +57,31 @@ def process1(): # 한번에 여러 파일 읽도록 수정 예정
     dt, fName = fileOpen(2)
 
     for c, d in enumerate(dt):
-        subDt = []
-        for i in d:
-            min = i[4].find('분')
-            if min != -1 and int(i[4][ : min]) <= 30 and i[5] in ['아무나', '초급']:
-                subDt.append(i)
+        try:
+            subDt = []
+            for i in d:
+                min = i[4].find('분')
+                if min != -1 and int(i[4][ : min]) <= 30 and i[5] in ['아무나', '초급']:
+                    subDt.append(i)
 
-        #fileCreate(subDt, 1, fName)
-        subDt = np.array(subDt)
+            #fileCreate(subDt, 1, fName[c])
+            subDt = np.array(subDt)
 
-        ingred = np.transpose(subDt[ : , 6 : 7]).tolist()[0]
-        ingred_dict = []
-        for i in ingred:
-            temp = ast.literal_eval(i)
-            ingred_dict.append(temp)
+            ingred = np.transpose(subDt[ : , 6 : 7]).tolist()[0]
+            ingred_dict = []
+            for i in ingred:
+                try:
+                    ingred_dict.append(ast.literal_eval(i))
+                except:
+                    continue
+
+        except:
+            print(fName[c])
 
         ingreds = []
         for i in ingred_dict:
             for j in i:
-                ingreds.append(list(j.keys())[0].replace(' ', ''))  # 재료명의 공백 제거
+                ingreds.append(j)  # 재료명의 공백 제거
 
         counts = Counter(ingreds)
 
