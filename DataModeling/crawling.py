@@ -17,7 +17,7 @@ def trySoup(url):
     while tryCount:
         try:
             content = requests.get(url).content
-            return BeautifulSoup(content, 'html.parser')
+            return BeautifulSoup(content.decode('utf-8', 'replace'), 'html.parser')
         except:
             tryCount -= 1
             print('\n³×Æ®¿öÅ© È®ÀÎ (' + str(tryCount) + ')\n')
@@ -37,7 +37,7 @@ def makeXlsx(dt):
     retry = 3
     while retry:
         try:
-            df = pd.DataFrame(dt, columns = ['Key', '¿ä¸®¸í', 'ÀÎºĞ', '¼Ò¿ä½Ã°£', '³­ÀÌµµ', 'Àç·á', 'Á¶¸®¹ı'])
+            df = pd.DataFrame(dt, columns = ['Key', '¸ŞÀÎ»çÁø', '¿ä¸®¸í', 'ÀÎºĞ', '¼Ò¿ä½Ã°£', '³­ÀÌµµ', 'Àç·á', 'Á¶¸®¹ı', 'Á¶¸®»çÁø'])
             df.to_excel(fileName, index = False)
             break
         except:
@@ -51,7 +51,7 @@ xCount = int(page / divBy)  # ¸¸µé¾îÁø ¿¢¼¿ÆÄÀÏ ¼ö
 
 data = []
 is_pages_end = False
-while not is_pages_end: # 1301~1400, 3501~4929 µ¥ÀÌÅÍ ³²À½
+while not is_pages_end:
     is_data_apd = False
     page += 1
     url = 'https://www.10000recipe.com/recipe/list.html?order=reco&page=' + str(page)
@@ -75,7 +75,11 @@ while not is_pages_end: # 1301~1400, 3501~4929 µ¥ÀÌÅÍ ³²À½
                     lCount += 1
                     continue
 
+                mainImg = subSoup.select_one('#main_thumbs')
+                mainSrc = mainImg['src']
+
                 title = getText(subSoup.select_one('#contents_area > div.view2_summary.st3 > h3'))  # ¿ä¸®¸í
+                title = re.sub(r'[^a-zA-Z¤¡-¤¾¤¿-¤Ó°¡-ÆR0-9\s]+', '', title)
 
                 sumInfo1 = getText(subSoup.select_one('#contents_area > div.view2_summary.st3 > div.view2_summary_info > span.view2_summary_info1'))    # ÀÎºĞ
                 sumInfo2 = getText(subSoup.select_one('#contents_area > div.view2_summary.st3 > div.view2_summary_info > span.view2_summary_info2'))    # ¼Ò¿ä½Ã°£
@@ -88,18 +92,30 @@ while not is_pages_end: # 1301~1400, 3501~4929 µ¥ÀÌÅÍ ³²À½
                         ingreds = ingreds_html.find_all('a')
                         for i in range(0, len(ingreds), 2):
                             ingred = ingreds[i].text.split()
-                            amount = (ingred[2] if len(ingred) > 2 else 'X')   
-                            ingredInfo.append({ingred[0] : amount})
+                            ingred.remove('±¸¸Å')
+                            ingredInfo.append(ingred)
 
                 # ³ëÇÏ¿ì(similar) Ãß°¡ ?
 
                 recipe = subSoup.select_one('#contents_area')
                 recipeLine = recipe.find_all('div', {'id' : re.compile('^stepD')})
                 recipeInfo = []     # Á¶¸®¹ı
-                for c, i in enumerate(recipeLine):
-                    recipeInfo.append({c + 1 : i.text})
+                recipeIng = []      # Á¶¸® Àç·á
+                recipeImg = []      # Á¶¸® »çÁø
 
-                subData.append([key, title, sumInfo1, sumInfo2, sumInfo3, ingredInfo, recipeInfo])
+                for c, i in enumerate(recipeLine):
+                    fullL = ''
+                    for recipeL in i.contents[0].contents:
+                        fullL += recipeL.text + ' '
+                    recipeInfo.append(f'{c + 1}. {fullL}')
+
+                    if len(i.contents) > 1:
+                        imgTag = i.contents[1].find('img')
+                        if imgTag != -1:
+                            src = imgTag['src']
+                            recipeImg.append(f'{c + 1}. {src}')
+
+                subData.append([key, mainSrc, title, sumInfo1, sumInfo2, sumInfo3, ingredInfo, recipeInfo, recipeImg])
 
             else:
                 print('')
@@ -117,7 +133,7 @@ while not is_pages_end: # 1301~1400, 3501~4929 µ¥ÀÌÅÍ ³²À½
                 makeXlsx(data)
                 data = []
 
-        elif not lCount:
+        else:
             is_pages_end = True
 
             print('°á°ú¾øÀ½\n')
@@ -131,6 +147,7 @@ while not is_pages_end: # 1301~1400, 3501~4929 µ¥ÀÌÅÍ ³²À½
             print('\n¿À·ù¹ß»ıÀ¸·Î ÀÎÇÑ ¼öÁıÁ¾·á\n')
 
 if data != []:
+    page -= 1
     makeXlsx(data)
 
 print('ÇÁ·Î±×·¥ Á¾·á')
