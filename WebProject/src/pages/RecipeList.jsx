@@ -1,12 +1,23 @@
 import Footer from "../containers/Footer";
+import styled from "styled-components";
+import RecipeListCtn from "../containers/RecipeListCtn";
 
 function RecipeList() {
-    return (
-      <>
-        레시피 목록 페이지
-        <Footer></Footer>
-      </>
-    );
-  }
+    
+  const Style = {
+    Wrapper: styled.div`
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    `,
+  }  
+
+  return (
+    <Style.Wrapper>
+      <RecipeListCtn></RecipeListCtn>
+      <Footer></Footer>
+    </Style.Wrapper>
+  );
+}
   
-  export default RecipeList;
+export default RecipeList;
