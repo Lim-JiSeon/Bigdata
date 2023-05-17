@@ -48,7 +48,8 @@ def fileCreate(dt, val, fileName):
     root = Tk()
     root.withdraw()
 
-    fName = filedialog.asksaveasfilename(initialdir = os.getcwd(), initialfile = fName)
+    #fName = filedialog.asksaveasfilename(initialdir = os.getcwd(), initialfile = fName)
+    fName = os.getcwd() + f'/{fName}'
     root.destroy()
 
     df.to_excel(fName, index = False)
@@ -85,11 +86,8 @@ def process1(): # 한번에 여러 파일 읽도록 수정 예정
         ingreds = []
         for i in ingred_dict:
             for j in i:
-                ingred = j[0]
-                if len(j) > 1:
-                    ingred += N.process(''.join(j[1 : ]))
-                ingreds.append(ingred)  # 재료명의 공백 제거
-
+                ingred = N.process(' '.join(j)).split()
+                ingreds.append(''.join(ingred))
 
         # count 및 재료명 저장 부분 수정 필요
         counts = Counter(ingreds)
