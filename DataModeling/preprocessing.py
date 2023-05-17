@@ -4,9 +4,9 @@ from collections import Counter
 import pandas as pd
 import numpy as np
 from tkinter import filedialog, Tk
+import utils
 import ast
-import os
-import re
+import os, re
 
 def fileOpen(opt):
     root = Tk()
@@ -56,6 +56,9 @@ def fileCreate(dt, val, fileName):
 def process1(): # 한번에 여러 파일 읽도록 수정 예정
     dt, fName = fileOpen(2)
 
+    print('재료 단위 제거')
+    N = utils.Normalize()
+
     for c, d in enumerate(dt):
         try:
             subDt = []
@@ -65,6 +68,7 @@ def process1(): # 한번에 여러 파일 읽도록 수정 예정
                     subDt.append(i)
 
             #fileCreate(subDt, 1, fName[c])
+
             subDt = np.array(subDt)
 
             ingred = np.transpose(subDt[ : , 6 : 7]).tolist()[0]
@@ -81,7 +85,11 @@ def process1(): # 한번에 여러 파일 읽도록 수정 예정
         ingreds = []
         for i in ingred_dict:
             for j in i:
-                ingreds.append(j)  # 재료명의 공백 제거
+                ingred = j[0]
+                if len(j) > 1:
+                    ingred += N.process(''.join(j[1 : ]))
+                ingreds.append(ingred)  # 재료명의 공백 제거
+
 
         # count 및 재료명 저장 부분 수정 필요
         counts = Counter(ingreds)
