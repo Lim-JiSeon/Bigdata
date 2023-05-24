@@ -1,4 +1,5 @@
 from tkinter import filedialog, Tk
+from konlpy.tag import Komoran
 import pandas as pd
 import os, re
 
@@ -7,24 +8,46 @@ class Normalize:    # 정규화 함수
         self.stopwords = readFile(os.getcwd(), 'Stopwords')
         for i in range(len(self.stopwords)):
             self.stopwords[i] = self.stopwords[i].replace('\n', '')
+        self.komoran = Komoran()
 
     def process(self, text):
         text = self.stripSCharacter(text)
+        if text == '':
+            return text
         text = self.removeStopword(text)
+        if text == '':
+            return text
+        text = self.lowercase(text)
+        if text == '':
+            return text
         #text = self.lowercase(text)
+        text = self.tagging(text)
         return text
 
     def stripSCharacter(self, text):        # 특수문자 제거
-        #return re.sub('[^a-zA-Z0-9\s]', '', text)
-        return re.sub('[^a-zA-Z0-9+\s\'&-]', '', text)  # +, -, ', & 기호 살림
+        return re.sub('[^ㄱ-ㅎ가-힣a-zA-Z0-9\s]', '', text)
 
     def removeStopword(self, text):         # 불용어 제거
         words = text.split()
-        return ' '.join([word for word in words if word not in self.stopwords])
+        newWords = []
+        for word in words:
+            keep = True
+            for s in self.stopwords:
+                if word.find(s) != -1:
+                    keep = False
+                    break
+            if keep:
+                newWords.append(word)
+        return ' '.join(newWords)
+        #return ' '.join([word for word in newWords if word.lower() not in self.stopwords])
 
     def lowercase(self, text):              # 소문자화
         words = text.split()
         return ' '.join([word.lower() for word in words])
+    
+    def tagging(self, text):
+        words = text.split()
+        return ' '.join([word for word in words if self.komoran.pos(word)[0][1] == 'NNP'])
 
 def filePaths(opt = 1):
     root = Tk()
