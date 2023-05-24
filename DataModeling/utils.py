@@ -5,7 +5,7 @@ import os, re
 
 class Normalize:    # 정규화 함수
     def __init__(self):
-        self.stopwords = readFile(os.getcwd(), 'Stopwords')
+        self.stopwords = readFile(os.getcwd(), '1. Stopwords')
         for i in range(len(self.stopwords)):
             self.stopwords[i] = self.stopwords[i].replace('\n', '')
         self.komoran = Komoran()
@@ -68,7 +68,7 @@ def filePaths(opt = 1):
 
 def readFile(path, name, opt = 1):
     if opt == 1:
-        with open(f'{path}/{name}', 'r', encoding ='UTF8') as f:
+        with open(f'{path}/{name}', 'r', encoding = 'cp949') as f:
             data = f.readlines()
         for i in range(len(data)):
             data[i] = data[i].replace('\n', '')
