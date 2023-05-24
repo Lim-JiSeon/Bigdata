@@ -4,9 +4,11 @@
 
 from colorama import Fore, Style
 import os
+import utils
 
-filePath = ''
-fileName = 'DataModeling/Stopwords.txt'
+fp, fn = utils.filePaths()
+filePath = fp[0]
+fileName = fn[0]
 
 with open(fileName, 'r+', encoding ='UTF8') as f:
     lines = f.readlines()
@@ -14,25 +16,25 @@ with open(fileName, 'r+', encoding ='UTF8') as f:
     print('\n')
     while 1:
         print('enter를 눌러 종료')
-        print('추가/삭제할 불용어 입력 : ', end = '')
-        stopW = input()
-        if stopW == '':
+        print('추가/삭제할 단어 입력 : ', end = '')
+        word = input()
+        if word == '':
             break
 
         os.system('cls')
 
-        if stopW in lines:  # 이미 존재하면 삭제
-            print(f'{Fore.LIGHTBLACK_EX}{stopW}{Style.RESET_ALL}을 목록에서 {Fore.RED}삭제{Style.RESET_ALL}(Y/N)', end = ' ')
+        if word in lines:  # 이미 존재하면 삭제
+            print(f'{Fore.LIGHTBLACK_EX}{word}{Style.RESET_ALL}을 목록에서 {Fore.RED}삭제{Style.RESET_ALL}(Y/N)', end = ' ')
             opt = input()
             os.system('cls')
             if opt == 'Y' or opt == 'y':
-                lines.remove(stopW)
-                print(f'{Fore.LIGHTBLACK_EX}{stopW}{Style.RESET_ALL}이 목록에서 {Fore.RED}삭제{Style.RESET_ALL}됨\n')
+                lines.remove(word)
+                print(f'{Fore.LIGHTBLACK_EX}{word}{Style.RESET_ALL}이 목록에서 {Fore.RED}삭제{Style.RESET_ALL}됨\n')
             else:
                 continue
         else:
-            lines.append(stopW)
-            print(f'{Fore.LIGHTBLACK_EX}{stopW}{Style.RESET_ALL}이 목록에 {Fore.BLUE}추가{Style.RESET_ALL}됨\n')
+            lines.append(word)
+            print(f'{Fore.LIGHTBLACK_EX}{word}{Style.RESET_ALL}이 목록에 {Fore.BLUE}추가{Style.RESET_ALL}됨\n')
 
         lines.sort()    
         
