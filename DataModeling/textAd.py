@@ -4,9 +4,11 @@
 
 from colorama import Fore, Style
 import os
+import utils
 
-filePath = ''
-fileName = 'DataModeling/Stopwords.txt'
+fp, fn = utils.filePaths()
+filePath = fp[0]
+fileName = fn[0]
 
 with open(fileName, 'r+', encoding ='UTF8') as f:
     lines = f.readlines()
