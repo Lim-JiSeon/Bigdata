@@ -10,7 +10,7 @@ fp, fn = utils.filePaths()
 filePath = fp[0]
 fileName = fn[0]
 
-with open(fileName, 'r+', encoding ='cp949') as f:
+with open(fileName, 'r+', encoding = 'cp949') as f:
     lines = f.readlines()
     lines = [line.rstrip('\n') for line in lines]
     print('\n')
@@ -31,6 +31,7 @@ with open(fileName, 'r+', encoding ='cp949') as f:
                 lines.remove(word)
                 print(f'{Fore.LIGHTBLACK_EX}{word}{Style.RESET_ALL}이 목록에서 {Fore.RED}삭제{Style.RESET_ALL}됨\n')
             else:
+                print('\n')
                 continue
         else:
             lines.append(word)
