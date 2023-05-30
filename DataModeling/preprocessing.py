@@ -17,7 +17,8 @@ def process1(): # 한번에 여러 파일 읽도록 수정 예정
         for d in data:
             minT = d[4].find('분')
             if minT != -1 and int(d[4][ : minT]) <= 30 and d[5] in ['아무나', '초급']:
-                subDt.append(d)
+                if d[3] != 'X' and int(d[3].replace('인분', '')) <= 3:
+                    subDt.append(d)
 
         df = utils.makeDf(subDt, ['Key', '메인사진', '요리명', '인분', '소요시간', '난이도', '재료', '조리법', '조리사진'])
         utils.saveFile(os.getcwd(), f'1_{n}', df, 2)
