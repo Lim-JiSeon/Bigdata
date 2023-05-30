@@ -61,8 +61,8 @@ df['조리법_맞춤법'] = 0
 # sentence = kiwi.split_into_sents(df['조리법'][1])
 # res =spell_checker.check(sentence[3])
 # print(res.checked)
-# len(df['조리법'])
-for i in range(0, 10):
+
+for i in range(0, len(df['조리법'])):
     sentence = kiwi.split_into_sents(df['조리법'][i])
     for j in range(0, len(sentence)):
         sentence_res = spell_checker.check(str(sentence[j].text))
