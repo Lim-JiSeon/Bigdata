@@ -5,8 +5,7 @@ import img2 from "../img/img2.jpg";
 import img3 from "../img/img3.jpg";
 
 
-function MainCtn() {
-    
+function MainCtn() { 
   const rotate = keyframes`
   from {
       transform:rotate(0deg);
@@ -74,7 +73,7 @@ function MainCtn() {
     <Style.ImgElement src={img1}></Style.ImgElement>,
     <Style.ImgElement src={img2}></Style.ImgElement>,
     <Style.ImgElement src={img3}></Style.ImgElement>
-  ]
+  ];
 
   return (
     <>
@@ -95,7 +94,7 @@ function MainCtn() {
               {ImgArray}
             </Style.ImgList>
             <Link to="../pages/Input"><Style.BtnWrap>
-              <Style.StartBtn>시작하기</Style.StartBtn>
+              <Style.StartBtn onClick={test}>시작하기</Style.StartBtn>
             </Style.BtnWrap></Link>
         </Style.Intro>
       </Style.Wrapper>
