@@ -25,12 +25,12 @@ def trySoup(url):
 def makeXlsx(dt):
     global xCount, divBy, page
     try:
-        folder = '10000recipeData'  # ¿¢¼¿ ÀúÀå Æú´õ¸í
+        folder = os.getcwd() + '/10000recipeData'  # ¿¢¼¿ ÀúÀå Æú´õ¸í
         os.mkdir(folder)
     except:
         pass
 
-    fileName = folder + '/F' + str(xCount * divBy + 1) + '_T' + str(page) + '.xlsx'
+    fileName = '/F' + str(xCount * divBy + 1) + '_T' + str(page) + '.xlsx'
     xCount += 1
 
     retry = 3
