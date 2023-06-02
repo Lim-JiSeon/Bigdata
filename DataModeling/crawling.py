@@ -84,22 +84,24 @@ while not is_pages_end:
                 sumInfo3 = getText(subSoup.select_one('#contents_area > div.view2_summary.st3 > div.view2_summary_info > span.view2_summary_info3'))    # 난이도
                 
                 ingredInfo = []     # 재료&양
-                ingreds_html = subSoup.select_one('#divConfirmedMaterialArea').contents[1]
-                ingreds = ingreds_html.find_all('a')
-                for i in ingreds[ : : 2]:
-                    ingred = ['재료'] + i.contents[1].text.split('\n')
-                    ingred = [' '.join(igd.split()) for igd in ingred[ : -1]]
-                    ingred.remove('구매')
-                    ingredInfo.append(ingred)
-
-                if len(ingreds) == 5:   # 재료, 양념 둘 다 있는 경우
-                    ingreds_html = subSoup.select_one('#divConfirmedMaterialArea').contents[3]
+                sub_html = subSoup.select_one('#divConfirmedMaterialArea')
+                if sub_html != None:
+                    ingreds_html = sub_html.contents[1]
                     ingreds = ingreds_html.find_all('a')
                     for i in ingreds[ : : 2]:
-                        ingred = ['양념'] + i.contents[1].text.split('\n')
+                        ingred = ['재료'] + i.contents[1].text.split('\n')
                         ingred = [' '.join(igd.split()) for igd in ingred[ : -1]]
                         ingred.remove('구매')
                         ingredInfo.append(ingred)
+
+                    if len(ingreds) == 5:   # 재료, 양념 둘 다 있는 경우
+                        ingreds_html = sub_html.contents[3]
+                        ingreds = ingreds_html.find_all('a')
+                        for i in ingreds[ : : 2]:
+                            ingred = ['양념'] + i.contents[1].text.split('\n')
+                            ingred = [' '.join(igd.split()) for igd in ingred[ : -1]]
+                            ingred.remove('구매')
+                            ingredInfo.append(ingred)
 
                 # 노하우(similar) 추가 ?
 
