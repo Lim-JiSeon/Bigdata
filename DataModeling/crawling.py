@@ -41,7 +41,7 @@ def makeXlsx(dt):
         except:
             retry -= 1
 
-page = 0                    # 4/6 기준 4928이 최대
+page = 2500                    # 4/6 기준 4928이 최대
 dCount = 0                  # 누적 데이터
 lCount = 0                  # 손실 데이터(삭제 추정)
 divBy = 100                 # 엑셀 저장 단위 페이지 수
@@ -94,7 +94,7 @@ while not is_pages_end:
                         ingred.remove('구매')
                         ingredInfo.append(ingred)
 
-                    if len(ingreds) == 5:   # 재료, 양념 둘 다 있는 경우
+                    if len(sub_html.contents) == 5:     # 재료, 양념 둘 다 있는 경우
                         ingreds_html = sub_html.contents[3]
                         ingreds = ingreds_html.find_all('a')
                         for i in ingreds[ : : 2]:
