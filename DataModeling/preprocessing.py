@@ -5,7 +5,7 @@ import numpy as np
 import ast, os
 import utils
 
-def process1(): # 한번에 여러 파일 읽도록 수정 예정
+def process1():
     fp, fn = utils.filePaths(2)
     for p, n in zip(fp, fn): 
         data = utils.readFile(p, n, 2).values.tolist()
@@ -35,11 +35,16 @@ def process1(): # 한번에 여러 파일 읽도록 수정 예정
 
         ingreds = []
         for i in ingred_dict:
+            ingreds.append(i[1])
+
+        # normalize 진행시
+        '''
+        for i in ingred_dict:
             for j in i:
                 ingred = N.process(' '.join(j)).split()
                 ingreds.append(''.join(ingred))
+        '''
 
-        # count 및 재료명 저장 부분 수정 필요
         counts = Counter(ingreds)
 
         counts_key = list(counts.keys())
@@ -68,8 +73,8 @@ def process2():
             #for i in range(len(d[0])):
             #    d[0][i] = d[0][i].replace(' ', '')
 
-            i = d[0]
-            c = d[1]
+            i = d[1]
+            c = d[2]
             if i in ingreds:
                 idx = ingreds.index(i)
                 counts[idx] += int(c)
