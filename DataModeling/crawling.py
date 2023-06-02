@@ -2,10 +2,9 @@
 
 import requests
 from bs4 import BeautifulSoup
-import pandas as pd
-import os
+import os, re
 import time
-import re
+import utils
 
 def getText(param):
     if param:
@@ -37,8 +36,7 @@ def makeXlsx(dt):
     retry = 3
     while retry:
         try:
-            df = pd.DataFrame(dt, columns = ['Key', '메인사진', '요리명', '인분', '소요시간', '난이도', '재료', '조리법', '조리사진'])
-            df.to_excel(fileName, index = False)
+            utils.saveFile(folder, fileName, dt, 2, ['Key', '메인사진', '요리명', '인분', '소요시간', '난이도', '재료', '조리법', '조리사진'])
             break
         except:
             retry -= 1

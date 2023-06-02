@@ -1,10 +1,11 @@
 from tkinter import filedialog, Tk
 from konlpy.tag import Komoran
+import pandas as pd
 import os, re
 
 class Normalize:    # 정규화 함수
     def __init__(self):
-        self.stopwords = readFile(os.getcwd() + '/DataModeling', 'Stopwords')
+        self.stopwords = readFile(os.getcwd(), '1. Stopwords.txt')
         for i in range(len(self.stopwords)):
             self.stopwords[i] = self.stopwords[i].replace('\n', '')
         self.komoran = Komoran()
@@ -19,7 +20,8 @@ class Normalize:    # 정규화 함수
         text = self.lowercase(text)
         if text == '':
             return text
-        #text = self.tagging(text)
+        #text = self.lowercase(text)
+        text = self.tagging(text)
         return text
 
     def stripSCharacter(self, text):        # 특수문자 제거
@@ -42,11 +44,10 @@ class Normalize:    # 정규화 함수
     def lowercase(self, text):              # 소문자화
         words = text.split()
         return ' '.join([word.lower() for word in words])
-
+    
     def tagging(self, text):
         words = text.split()
         return ' '.join([word for word in words if self.komoran.pos(word)[0][1] == 'NNP'])
-               
 
 def filePaths(opt = 1):
     root = Tk()
@@ -55,7 +56,7 @@ def filePaths(opt = 1):
     if opt == 1:
         fullPaths = filedialog.askopenfilenames(title = 'Select txt Files', initialdir = os.getcwd(), filetypes = [("Text files", "*.txt"), ("All files", "*.*")])
     elif opt == 2:
-        fullPaths = filedialog.askopenfilenames(title = 'Select Excel File', initialdir = os.getcwd(), filetypes=[('Excel files', '*.xlsx'), ("All files", "*.*")])
+        fullPaths = filedialog.askopenfilenames(title = 'Select Excel File', initialdir = os.getcwd(), filetypes=[('Excel files',('*.csv', '*.xlsx')), ("All files", "*.*")])
 
     paths, names = [], []
     for p in fullPaths:
@@ -65,14 +66,22 @@ def filePaths(opt = 1):
     
     return paths, names
 
-def readFile(path, name):
-    with open(f'{path}/{name}.txt', 'r', encoding ='UTF8') as f:
-        text = f.readlines()
-    for i in range(len(text)):
-        text[i] = text[i].replace('\n', '')
-    return text
+def readFile(path, name, opt = 1):
+    if opt == 1:
+        with open(f'{path}/{name}', 'r', encoding = 'cp949') as f:
+            data = f.readlines()
+        for i in range(len(data)):
+            data[i] = data[i].replace('\n', '')
+    elif opt == 2:
+        data = pd.read_excel(f'{path}/{name}')
 
-def saveFile(path, name, text):
-    with open(f'{path}/{name}.txt', 'w', encoding ='UTF8') as f:    # txt파일
-        for line in text:
-            f.write(line + '\n')
+    return data
+
+def saveFile(path, name, data, opt = 1, cols = None):
+    if opt == 1:
+        with open(f'{path}/{name}', 'w', encoding ='cp949') as f:
+            for line in data:
+                f.write(line + '\n')
+    elif opt == 2:
+        df = pd.DataFrame(data, columns = cols)
+        df.to_excel(f'{path}/{name}', index = False)
