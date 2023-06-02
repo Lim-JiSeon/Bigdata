@@ -6,18 +6,19 @@ import ast, os
 import utils
 
 def process1():
+    print('재료 단위 제거')
+    #N = utils.Normalize()
+
     fp, fn = utils.filePaths(2)
     for p, n in zip(fp, fn): 
         data = utils.readFile(p, n, 2).values.tolist()
         
-        print('재료 단위 제거')
-        N = utils.Normalize()
-
+        # filter
         subDt = []
         for d in data:
             minT = d[4].find('분')
-            if minT != -1 and int(d[4][ : minT]) <= 30 and d[5] in ['아무나', '초급']:
-                if d[3] != 'X' and int(d[3].replace('인분', '')) <= 3:
+            if minT != -1 and int(d[4][ : minT]) <= 30 and d[5] in ['아무나', '초급']:   # 30분 이내 + 아무나, 초급 난이도
+                if d[3] != 'X' and int(d[3].replace('인분', '')) <= 3:                   # 3인분 이내
                     subDt.append(d)
 
         df = utils.makeDf(subDt, ['Key', '메인사진', '요리명', '인분', '소요시간', '난이도', '재료', '조리법', '조리사진'])
