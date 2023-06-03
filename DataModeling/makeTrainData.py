@@ -17,6 +17,7 @@ def txtLabels():    # 수동 라벨링 데이터
             for info in token[1 : ]:
                 if info == '':
                     continue
+                info = ' '.join(info.split())
                 #si = info.split()
                 targets.append(info)
                 #targets.append(' '.join(si[1 : ]))
@@ -47,7 +48,8 @@ def standard(origin, target, label):
         if s == -1:
             return 'x'
         e = s + len(nt)
-        while newOrigin[e] != ' ':
+        
+        while e < len(newOrigin) and newOrigin[e] != ' ':
             e += 1
         entities.append((s, e, f'{l}'))
 
