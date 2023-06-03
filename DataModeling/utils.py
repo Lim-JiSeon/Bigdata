@@ -47,7 +47,14 @@ class Normalize:    # 정규화 함수
     
     def tagging(self, text):
         words = text.split()
-        return ' '.join([word for word in words if self.komoran.pos(word)[0][1] == 'NNP'])
+
+        newWords = []
+        for w in words:
+            word, tag = zip(*self.komoran.pos(w))
+            if not len({'VA', 'XR'} & set(tag)):
+                newWords.append(w)
+
+        return ' '.join(newWords)
 
 def filePaths(opt = 1):
     root = Tk()
