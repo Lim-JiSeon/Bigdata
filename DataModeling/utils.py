@@ -70,7 +70,7 @@ def filePaths(opt = 1):
 
 def readFile(path, name, opt = 1):
     if opt == 1:
-        with open(f'{path}/{name}', 'r', encoding = 'cp949') as f:
+        with open(f'{path}/{name}', 'r', encoding = 'utf8') as f:
             data = f.readlines()
         for i in range(len(data)):
             data[i] = data[i].replace('\n', '')
@@ -81,7 +81,7 @@ def readFile(path, name, opt = 1):
 
 def saveFile(path, name, data, opt = 1, cols = None):
     if opt == 1:
-        with open(f'{path}/{name}', 'w', encoding ='cp949') as f:
+        with open(f'{path}/{name}', 'w', encoding ='utf8') as f:
             for line in data:
                 f.write(line + '\n')
     elif opt == 2:
