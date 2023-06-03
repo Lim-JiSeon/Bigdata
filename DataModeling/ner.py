@@ -58,7 +58,7 @@ def setModel():
     for p, n in zip(fp, fn): 
         text = utils.readFile(p, n)
         for line in text:
-            trainData.append(eval(line))
+            trainData.append(eval(N.tagging(line)))
 
     config = {"nlp": {"tokenizer": {"@tokenizers": "spacy.Tokenizer.v1"}}}
     nlp = spacy.blank("ko", config = config)
@@ -107,4 +107,5 @@ def setModel():
 
     extract(nlp)   # for test
 
+N = utils.Normalize()
 setModel()

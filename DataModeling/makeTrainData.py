@@ -38,12 +38,14 @@ def standard(origin, target, label):
         label = [label]
 
     entities = []
-    #newOrigin = N.process(origin)
-    newOrigin = origin
+    newOrigin = N.tagging(origin)
+    #newOrigin = origin
 
     for t, l in zip(target, label):
-        #nt = N.process(t)
-        nt = t
+        nt = N.tagging(t)
+        if nt == '':
+            return 'x'
+        #nt = t
         s = newOrigin.find(nt)
         if s == -1:
             return 'x'
