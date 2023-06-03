@@ -51,7 +51,7 @@ class Normalize:    # 정규화 함수
         newWords = []
         for w in words:
             word, tag = zip(*self.komoran.pos(w))
-            if not len({'VA', 'XR'} & set(tag)):
+            if not len({'VA', 'XR'} & set(tag)):    # https://docs.komoran.kr/firststep/postypes.html 품사표
                 newWords.append(w)
 
         return ' '.join(newWords)

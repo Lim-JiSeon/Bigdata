@@ -11,18 +11,17 @@ def process1():
 
     fp, fn = utils.filePaths(2)
     for p, n in zip(fp, fn): 
-        data = utils.readFile(p, n, 2).values.tolist()
+        data = utils.readFile(p, n, 2).values.tolist()[1 : ]
         
         # filter
         subDt = []
         for d in data:
             minT = d[4].find('분')
             if minT != -1 and int(d[4][ : minT]) <= 30 and d[5] in ['아무나', '초급']:   # 30분 이내 + 아무나, 초급 난이도
-                if d[3] != 'X' and int(d[3].replace('인분', '')) <= 3:                   # 3인분 이내
+                if d[3] != 'X' and int(d[3][0]) <= 3:                   # 3인분 이내
                     subDt.append(d)
 
-        df = utils.makeDf(subDt, ['Key', '메인사진', '요리명', '인분', '소요시간', '난이도', '재료', '조리법', '조리사진'])
-        utils.saveFile(os.getcwd(), f'1_{n}', df, 2)
+        utils.saveFile(os.getcwd(), f'1_{n}', subDt, 2, ['Key', '메인사진', '요리명', '인분', '소요시간', '난이도', '재료', '조리법', '조리사진'])
 
         subDt = np.array(subDt)
 
@@ -36,7 +35,9 @@ def process1():
 
         ingreds = []
         for i in ingred_dict:
-            ingreds.append(i[1])
+            if i == []:
+                continue
+            ingreds.append(i[0][1])
 
         # normalize 진행시
         '''
@@ -55,18 +56,15 @@ def process1():
         for i in range(len(counts_key)):
             param.append([counts_key[i], counts_val[i]])  
     
-        df = utils.makeDf(param, ['재료', '빈도수'])
-        utils.saveFile(os.getcwd(), f'2_{n}', df, 2)
-
+        df = utils.saveFile(os.getcwd(), f'2_{n}', param, 2, ['재료', '빈도수'])
 
 def process2():
+    ingreds = []
+    counts = []
     fp, fn = utils.filePaths(2)
-
     for p, n in zip(fp, fn): 
-        data = utils.readFile(p, n, 2).values.tolist()
+        data = utils.readFile(p, n, 2).values.tolist()[1 : ]
 
-        ingreds = []
-        counts = []
         for d in data:
             d = np.array(d).transpose().tolist()
 
@@ -74,8 +72,8 @@ def process2():
             #for i in range(len(d[0])):
             #    d[0][i] = d[0][i].replace(' ', '')
 
-            i = d[1]
-            c = d[2]
+            i = d[0]
+            c = d[1]
             if i in ingreds:
                 idx = ingreds.index(i)
                 counts[idx] += int(c)
@@ -83,13 +81,10 @@ def process2():
                 ingreds.append(i)
                 counts.append(int(c))
 
-        newData = []
-        for i in range(len(ingreds)):
-            newData.append([ingreds[i], counts[i]])
-        newData = sorted(newData, key=lambda x: x[1], reverse=True)
+    newData = [[i, c] for i, c in zip(ingreds, counts)]
+    newData = sorted(newData, key = lambda x: x[1], reverse=True)
 
-    df = utils.makeDf(df, ['재료', '빈도수'])
-    utils.saveFile(os.getcwd(), '재료사전', df, 2)
+    utils.saveFile(os.getcwd(), '재료사전.xlsx', newData, 2, ['재료', '빈도수'])
 
 print('1. 소요시간, 난이도 필터링 및 재료 빈도수')
 print('2. 재료 빈도수 취합')
