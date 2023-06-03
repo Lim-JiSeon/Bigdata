@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 #import os
 #import sys
 #import urllib.request
@@ -7,23 +9,20 @@
 #import pandas as pd
 #import numpy as np
 import re
-from hanspell import spell_checker
+#from hanspell import spell_checker
 from kiwipiepy import Kiwi
 
 kiwi = Kiwi()
 
-a = ['1. 일단 고기 500g 정도양에 맛간장1,후추약간,청주1,생강즙1,마늘,참기름 이렇게 넣고 조물조물해준뒤 체에 받혀서 냉장고에 넣어두어요. ', '2. 달구어진팬에 포도씨유를 조금 두르고 고기를 볶아주세요 ', '3. 고기가 익으면. 굴소스로 간을 맞추시는데요. 그 다음 꿀마늘도 넣어줍니다. ', '4. 고기가 볶아지면 버섯과 고추를 넣고 볶아주세요.. 이때 굴소스를 조금 더 넣어서 간을 맞춰주심 됩니다 ', '5. 마지막으로 참기름 과 통깨 뿌리고 마무리하시면 됩니다. ']
-
 def process(recipe):
-    for line in recipe:
-        line = re.sub('[^ㄱ-ㅎ가-힣a-zA-Z0-9\s]', '', line)
+    lines = kiwi.split_into_sents(recipe)
 
-        res = kiwi.split_into_sents(line)
-        ress = spell_checker.check(res[0].text)
+    newLines = []
+    for line in lines:
+        res = line[0].text[ : 3] + re.sub('[^ㄱ-ㅎ가-힣a-zA-Z0-9\s]', '', line[0].text[3 : ])
+        newLines.append(res)
 
-        print(ress)
-
-process(a)
+    return newLines
 
 '''
 ### py-hanspell 설치 오류 해결 및 실행 방법
