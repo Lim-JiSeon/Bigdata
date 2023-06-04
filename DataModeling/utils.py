@@ -12,6 +12,9 @@ class Normalize:    # 정규화 함수
         self.komoran = Komoran()
         self.kiwi = Kiwi()
 
+        # https://docs.komoran.kr/firststep/postypes.html 품사표
+        self.tag = {'VA', 'XR', 'JKB', 'IC', 'MAG', 'MAJ', 'VX', 'VCP', 'VCN', 'JKG'}
+
     def process(self, text):
         text = self.stripSCharacter(text)
         if text == '':
@@ -53,12 +56,12 @@ class Normalize:    # 정규화 함수
         newWords = []
         for w in words:
             word, tag = zip(*self.komoran.pos(w))
-            if not len({'VA', 'XR'} & set(tag)):    # https://docs.komoran.kr/firststep/postypes.html 품사표
+            if not len(self.tag & set(tag)):    
                 newWords.append(w)
 
         return ' '.join(newWords)
 
-    def similarity(self, line, opt = 2):
+    def grammar(self, line, opt = 2):
         line = self.kiwi.split_into_sents(line)
 
         if opt == 1:
