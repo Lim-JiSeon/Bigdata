@@ -51,8 +51,8 @@ def standard(origin, target, label):
             return 'x'
         e = s + len(nt)
         
-        while e < len(newOrigin) and newOrigin[e] != ' ':
-            e += 1
+        if e < len(newOrigin) and newOrigin[e] != ' ':
+            newOrigin = newOrigin[ : e] + ' ' + newOrigin[e : ]
         entities.append((s, e, f'{l}'))
 
     res = (newOrigin, {'entities' : entities})
