@@ -16,7 +16,7 @@ if opt == 1:	# excel -> json
 
 		RECIPE_DS = {}
 		for d in data:
-			try:
+			try:	# 데이터 손실이 일어났을 경우를 대비
 				# INGR, COND
 				INGR, COND = [], []
 				for i in ast.literal_eval(d[6]):
