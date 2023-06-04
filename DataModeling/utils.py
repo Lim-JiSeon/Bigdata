@@ -1,5 +1,6 @@
 from tkinter import filedialog, Tk
 from konlpy.tag import Komoran
+from kiwipiepy import Kiwi
 import pandas as pd
 import os, re
 
@@ -9,6 +10,10 @@ class Normalize:    # 정규화 함수
         for i in range(len(self.stopwords)):
             self.stopwords[i] = self.stopwords[i].replace('\n', '')
         self.komoran = Komoran()
+        self.kiwi = Kiwi()
+
+        # https://docs.komoran.kr/firststep/postypes.html 품사표
+        self.tag = {'VA', 'XR', 'JKB', 'IC', 'MAG', 'MAJ', 'VX', 'VCP', 'VCN', 'JKG'}
 
     def process(self, text):
         text = self.stripSCharacter(text)
@@ -51,10 +56,19 @@ class Normalize:    # 정규화 함수
         newWords = []
         for w in words:
             word, tag = zip(*self.komoran.pos(w))
-            if not len({'VA', 'XR'} & set(tag)):    # https://docs.komoran.kr/firststep/postypes.html 품사표
+            if not len(self.tag & set(tag)):    
                 newWords.append(w)
 
         return ' '.join(newWords)
+
+    def grammar(self, line, opt = 2):
+        line = self.kiwi.split_into_sents(line)
+
+        if opt == 1:
+            return line[0].text
+        if opt == 2:
+            return line[0].text[ : 3] + re.sub('[^ㄱ-ㅎ가-힣a-zA-Z0-9\s]', '', line[0].text[3 : ])
+
 
 def filePaths(opt = 1):
     root = Tk()
