@@ -7,11 +7,11 @@ import utils
 modelName = 'ner_model'
 # 하이퍼파라미터
 HP = {
-    'dropout'   :   0.25,
+    'dropout'   :   0.42,
     'minBatch'  :   40,
     'maxBatch'  :   50,
-    'learnRate' :   0.001,
-    'epochs'    :   90,
+    'learnRate' :   0.01,
+    'epochs'    :   80,
     'patience'  :   100
 }
 # 라벨
@@ -33,7 +33,7 @@ def extract(model, fp = None, fn = None):
         dish = []
         for line in text:
             if line != '':
-                line = N.similarity(line)
+                line = N.process(line)
                 temp = []
                 doc = model(line)
                 for entity in doc.ents:
@@ -121,4 +121,4 @@ def setModel():
     extract(nlp)   # for test
 
 N = utils.Normalize()
-setModel()
+#setModel()
