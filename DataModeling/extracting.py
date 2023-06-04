@@ -5,7 +5,6 @@ from ckonlpy.tag import Twitter
 import os, re, ast
 import utils
 import ner
-#import recipe_spell as rs
 
 model = ner.loadModel()
 
@@ -21,6 +20,8 @@ def dishNameExtract(dishNames, ingreds):
 
 def process():
     os.system('cls')
+
+    '''
     print('재료사전 선택')
     ingreds_ds = []
     fp, fn = utils.filePaths(2) # 재료사전 파일 읽기
@@ -36,9 +37,10 @@ def process():
         limit = 20
     ingreds_ds = [ingreds_ds[i][0] for i in range(len(ingreds_ds)) if ingreds_ds[i][1] >= limit]
     ingreds_ds += utils.readFile(os.getcwd(), '3. Ingreds.txt')
+    '''
+    N = utils.Normalize()
 
-
-    print('\n엑셀파일 선택(여러개 선택 가능)')
+    print('엑셀파일 선택(여러개 선택 가능)')
     print('필터링된 데이터 선택\n')
     fp, fn = utils.filePaths(2) # 요리명을 추출할 엑셀파일 열기
     for p, n in zip(fp, fn): 
@@ -47,20 +49,22 @@ def process():
 
         newDt = []
         for d in ds:
-            # 요리명
-            dish = d[2]
-
-            tempDish = []
-            doc = model(dish)
-            for entity in doc.ents:
-                if entity.label_ == 'DISH':
-                    tempDish.append(entity.text)
-
-            dish = ' '.join(tempDish)
-            if dish == '':
-                continue
-
             try:    # 데이터 손실이 일어났을 경우를 대비
+                # 요리명
+                dish = N.process(d[2])
+                dish = N.grammar(dish, 1)
+
+                tempDish = []
+                doc = model(dish)
+                for entity in doc.ents:
+                    if entity.label_ == 'DISH':
+                        tempDish.append(entity.text)
+
+                dish = ' '.join(tempDish)
+
+                if dish == '' or len(dish) > 10:
+                    continue
+            
                 # 재료
                 if d[6] == '[]':
                     continue
