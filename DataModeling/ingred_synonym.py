@@ -7,7 +7,7 @@ df = pd.read_excel('조리법_필터링_종합2.xlsx')
 
 sample_index = 11
 sample_title = df['조리법'][sample_index]
-print(sample_title)
+# print(sample_title)
 
 sample_content = df['조리법'][sample_index]
 print(sample_content)
