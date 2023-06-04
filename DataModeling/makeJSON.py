@@ -71,21 +71,27 @@ else:
 
 	RECIPE_ds = dict(sorted(RECIPE_ds.items()))
 
-	print('재료사전 선택')
-	fp, fn =  utils.filePaths(2)	# 재료사전
-	for p, n in zip(fp, fn): 
-		data = utils.readFile(p, n, 2).values.tolist()
-
-		ingreds = []
-		for d in data:
-			ingreds.append(d[0])
-
 	# INGREDIENT.json
 	INGREDIENT_ds = {}
-	
+	ingreds = []
+	for KEY, i in RECIPE_ds.items():
+		for j in i['INGR']:
+			ingred = j[1]
+			if ingred not in INGREDIENT_ds:
+				INGREDIENT_ds[ingred] = [KEY]
+				ingreds.append(ingred)
+			else:
+				INGREDIENT_ds[ingred].append(KEY)
+
+	for i in ingreds:
+		INGREDIENT_ds[i].sort()
 
 	# DISH.json
 	DISH_ds = {}
+	for KEY, i in RECIPE_ds.items():
+		for dish in i['DISH']:
+			if dish not in DISH_ds:
+				DISH_ds[dish] = KEY
 
 	with open('RECIPE.json', 'w') as f:
 		json.dump(RECIPE_ds, f)
