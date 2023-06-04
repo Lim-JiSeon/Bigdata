@@ -6,7 +6,7 @@ import ast, os
 import utils
 
 def process1():
-    print('재료 단위 제거')
+    #print('재료 단위 제거')
     #N = utils.Normalize()
 
     fp, fn = utils.filePaths(2)
