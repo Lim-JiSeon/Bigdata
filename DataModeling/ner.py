@@ -7,17 +7,16 @@ import utils
 modelName = 'ner_model'
 # 하이퍼파라미터
 HP = {
-    'dropout'   :   0.5,
-    'minBatch'  :   32,
+    'dropout'   :   0.25,
+    'minBatch'  :   40,
     'maxBatch'  :   50,
     'learnRate' :   0.001,
-    'epochs'    :   100,
+    'epochs'    :   90,
     'patience'  :   100
 }
 # 라벨
 labels = ['DISH']
-# 확률(predict)
-#probability = 0.5
+
 #-------------------------------------------------------------------------------------
 
 def extract(model, fp = None, fn = None):
@@ -32,21 +31,34 @@ def extract(model, fp = None, fn = None):
         text = utils.readFile(p, n)
 
         dish = []
-        for line in text[1 : ]:
+        for line in text:
             if line != '':
+                line = N.similarity(line)
+                temp = []
                 doc = model(line)
-
                 for entity in doc.ents:
                     if entity.label_ == 'DISH':
                         dish.append(entity.text)
+                        temp.append(entity.text)
+
+            if temp != '':
+                print(' '.join(temp))
 
         dishes.append(dish)
 
-        print('\n=======================================================')
-        print('음식명:')
-        print('\n'.join(dish))
-
     return dishes
+
+def loadModel():
+    global modelName
+
+    try:
+        print('커스텀 모델 사용')
+        model = spacy.load(modelName)
+    except:
+        print('오픈소스로 제공된 모델 사용')
+        model = spacy.load('ko_core_news_sm')
+
+    return model
 
 def setModel():
     from spacy.util import minibatch, compounding
@@ -104,6 +116,7 @@ def setModel():
     nlp.to_disk(modelName)
 
     print('\n모델 저장 완료')
+    print('======================================================')
 
     extract(nlp)   # for test
 
