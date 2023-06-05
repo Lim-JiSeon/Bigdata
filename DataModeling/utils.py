@@ -1,74 +1,65 @@
 from tkinter import filedialog, Tk
-from konlpy.tag import Komoran
-from kiwipiepy import Kiwi
+#from konlpy.tag import Komoran
+from pykospacing import Spacing
 import pandas as pd
 import os, re
 
 class Normalize:    # 정규화 함수
     def __init__(self):
-        self.stopwords = readFile(os.getcwd(), '1. Stopwords.txt')
-        for i in range(len(self.stopwords)):
-            self.stopwords[i] = self.stopwords[i].replace('\n', '')
-        self.komoran = Komoran()
-        self.kiwi = Kiwi()
-
-        # https://docs.komoran.kr/firststep/postypes.html 품사표
-        self.tag = {'VA', 'XR', 'JKB', 'IC', 'MAG', 'MAJ', 'VX', 'VCP', 'VCN', 'JKG'}
+        self.stopwords_1 = readFile(os.getcwd(), 'Stopwords_1.txt')
+        self.stopwords_2 = readFile(os.getcwd(), 'Stopwords_2.txt')
+        for i in range(len(self.stopwords_1)):
+            self.stopwords_1[i] = self.stopwords_1[i].replace('\n', '')
+        for i in range(len(self.stopwords_2)):
+            self.stopwords_2[i] = self.stopwords_2[i].replace('\n', '')
+        #self.komoran = Komoran()
+        self.spacing = Spacing()
 
     def process(self, text):
         text = self.stripSCharacter(text)
         if text == '':
             return text
+        text = self.resentense(text)
+        if text == '':
+            return text
         text = self.removeStopword(text)
         if text == '':
             return text
-        text = self.lowercase(text)
-        if text == '':
-            return text
-        #text = self.lowercase(text)
-        text = self.tagging(text)
+        text = self.removeStopword(text, 1)
         return text
 
-    def stripSCharacter(self, text):        # 특수문자 제거
-        return re.sub('[^ㄱ-ㅎ가-힣a-zA-Z0-9\s]', '', text)
+    def stripSCharacter(self, text):
+        text = re.sub('[^ㄱ-ㅎ가-힣\s]', '', text)                  # 한글만 남기기
+        return re.sub("[\u3131-\u3163\uac00-\ud7a3]+", '', text)    # 단자음, 단모음 제거
 
-    def removeStopword(self, text):         # 불용어 제거
-        words = text.split()
-        newWords = []
-        for word in words:
-            keep = True
-            for s in self.stopwords:
-                if word.find(s) != -1:
-                    keep = False
-                    break
-            if keep:
-                newWords.append(word)
-        return ' '.join(newWords)
-        #return ' '.join([word for word in newWords if word.lower() not in self.stopwords])
+    def removeStopword(self, text, opt = 0):         # 불용어 제거
+        if opt == 0:
+            words = text.split()
+            newWords = []
+            for word in words:
+                keep = True
+                for s in self.stopwords_1:
+                    if word == s:
+                        keep = False
+                        break
+                if keep:
+                    newWords.append(word)
+            return ' '.join(newWords)
+        else:
+            words = text.split()
+            newWords = []
+            for word in words:
+                keep = True
+                for s in self.stopwords_2:
+                    if word.find(s) != -1:
+                        keep = False
+                        break
+                if keep:
+                    newWords.append(word)
+            return ' '.join(newWords)
 
-    def lowercase(self, text):              # 소문자화
-        words = text.split()
-        return ' '.join([word.lower() for word in words])
-    
-    def tagging(self, text):
-        words = text.split()
-
-        newWords = []
-        for w in words:
-            word, tag = zip(*self.komoran.pos(w))
-            if not len(self.tag & set(tag)):    
-                newWords.append(w)
-
-        return ' '.join(newWords)
-
-    def grammar(self, line, opt = 2):
-        line = self.kiwi.split_into_sents(line)
-
-        if opt == 1:
-            return line[0].text
-        if opt == 2:
-            return line[0].text[ : 3] + re.sub('[^ㄱ-ㅎ가-힣a-zA-Z0-9\s]', '', line[0].text[3 : ])
-
+    def resentense(self, text):
+        return self.spacing(text) 
 
 def filePaths(opt = 1):
     root = Tk()
@@ -108,3 +99,6 @@ def saveFile(path, name, data, opt = 1, cols = None):
     elif opt == 2:
         df = pd.DataFrame(data, columns = cols)
         df.to_excel(f'{path}/{name}', index = False)
+
+def useN():
+    return Normalize()
