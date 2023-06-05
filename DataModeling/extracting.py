@@ -38,7 +38,7 @@ def process():
     ingreds_ds = [ingreds_ds[i][0] for i in range(len(ingreds_ds)) if ingreds_ds[i][1] >= limit]
     ingreds_ds += utils.readFile(os.getcwd(), '3. Ingreds.txt')
     '''
-    N = utils.Normalize()
+    N = utils.useN()
 
     print('엑셀파일 선택(여러개 선택 가능)')
     print('필터링된 데이터 선택\n')
@@ -52,7 +52,6 @@ def process():
             try:    # 데이터 손실이 일어났을 경우를 대비
                 # 요리명
                 dish = N.process(d[2])
-                dish = N.grammar(dish, 1)
 
                 tempDish = []
                 doc = model(dish)

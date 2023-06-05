@@ -26,6 +26,8 @@ def extract(model, fp = None, fn = None):
     else:
         fp, fn = [fp], [fn]
 
+    N = utils.useN()
+
     dishes = []
     for p, n in zip(fp, fn): 
         text = utils.readFile(p, n)
@@ -70,7 +72,7 @@ def setModel():
     for p, n in zip(fp, fn): 
         text = utils.readFile(p, n)
         for line in text:
-            trainData.append(eval(N.tagging(line)))
+            trainData.append(eval(line))
 
     config = {"nlp": {"tokenizer": {"@tokenizers": "spacy.Tokenizer.v1"}}}
     nlp = spacy.blank("ko", config = config)
@@ -120,5 +122,4 @@ def setModel():
 
     extract(nlp)   # for test
 
-N = utils.Normalize()
-#setModel()
+setModel()
