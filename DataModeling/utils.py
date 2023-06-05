@@ -28,11 +28,10 @@ class Normalize:    # 정규화 함수
         text = self.removeStopword(text, 1)
         return text
 
-    def stripSCharacter(self, text):
-        text = re.sub('[^ㄱ-ㅎ가-힣\s]', '', text)                  # 한글만 남기기
-        return re.sub("[\u3131-\u3163\uac00-\ud7a3]+", '', text)    # 단자음, 단모음 제거
+    def stripSCharacter(self, text):                # 한글만 남기기
+        return re.sub('[^가-힣\s]', '', text)       
 
-    def removeStopword(self, text, opt = 0):         # 불용어 제거
+    def removeStopword(self, text, opt = 0):        # 불용어 제거
         if opt == 0:
             words = text.split()
             newWords = []
