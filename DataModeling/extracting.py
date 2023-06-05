@@ -1,24 +1,9 @@
 # -*- encoding= cp949 -*-
 
 from konlpy.tag import Komoran
-from ckonlpy.tag import Twitter
+import recipe_spell as rs
 import os, re, ast
 import utils
-#import ner
-
-import recipe_spell as rs
-
-#model = ner.loadModel()
-
-def dishNameExtract(dishNames, ingreds):
-    dishNameList = []
-    for ingred in ingreds:
-        for dishName in dishNames:
-            dishName = re.sub('[^a-zA-Z0-9\s\uAC00-\uD7AF]', '', dishName)  # 특수문자 제거
-            if ingred in dishName and tagging.pos(dishName)[0][1] == 'NNP':
-                dishNameList.append(dishName)
-    dishNameList = list(set(dishNameList))
-    return dishNameList
 
 def process():
     os.system('cls')
@@ -94,12 +79,5 @@ def process():
         name = n[2 : ]
         utils.saveFile(os.getcwd(), f'3_{name}', newDt, 2, df.columns)
 
-def addDict():
-    words = utils.readFile(os.getcwd(), '2. Dictionary.txt')
-    for word in words:
-        twitter.add_dictionary(word, 'Noun')
-
-twitter = Twitter()
-addDict()
 tagging = Komoran()
 process()
