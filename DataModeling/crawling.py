@@ -41,7 +41,7 @@ def makeXlsx(dt):
         except:
             retry -= 1
 
-page = 2500                    # 4/6 기준 4928이 최대
+page = 0                    # 4/6 기준 4928이 최대
 dCount = 0                  # 누적 데이터
 lCount = 0                  # 손실 데이터(삭제 추정)
 divBy = 100                 # 엑셀 저장 단위 페이지 수

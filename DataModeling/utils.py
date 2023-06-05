@@ -8,25 +8,32 @@ class Normalize:    # 정규화 함수
     def __init__(self):
         self.stopwords_1 = readFile(os.getcwd(), 'Stopwords_1.txt')
         self.stopwords_2 = readFile(os.getcwd(), 'Stopwords_2.txt')
+        self.findwords = readFile(os.getcwd(), 'Findwords.txt')
         for i in range(len(self.stopwords_1)):
             self.stopwords_1[i] = self.stopwords_1[i].replace('\n', '')
         for i in range(len(self.stopwords_2)):
             self.stopwords_2[i] = self.stopwords_2[i].replace('\n', '')
+        for i in range(len(self.findwords)):
+            self.findwords[i] = self.findwords[i].replace('\n', '')
         #self.komoran = Komoran()
         self.spacing = Spacing()
 
-    def process(self, text):
+    def process(self, text, opt = 1):
         text = self.stripSCharacter(text)
         if text == '':
             return text
         text = self.resentense(text)
         if text == '':
             return text
-        text = self.removeStopword(text)
-        if text == '':
+        if opt == 1:
+            text = self.removeStopword(text)
+            if text == '':
+                return text
+            text = self.removeStopword(text, 1)
             return text
-        text = self.removeStopword(text, 1)
-        return text
+        else:
+            text = self.findWord(text)
+            return text
 
     def stripSCharacter(self, text):                # 한글만 남기기
         return re.sub('[^가-힣\s]', '', text)       
@@ -56,6 +63,15 @@ class Normalize:    # 정규화 함수
                 if keep:
                     newWords.append(word)
             return ' '.join(newWords)
+
+    def findWord(self, text):
+        words = text.split()
+        newWords = []
+        for word in words:
+            for f in self.findwords:
+                if word == f:
+                    newWords.append(word)
+        return ' '.join(newWords)
 
     def resentense(self, text):
         return self.spacing(text) 

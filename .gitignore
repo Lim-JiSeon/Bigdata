@@ -10,3 +10,4 @@
 /DataModeling/__pycache__
 /DataModeling/ner_model
 /DataModeling/hanspell
+/DataModeling/traindata
