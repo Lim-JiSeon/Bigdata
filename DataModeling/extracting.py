@@ -4,9 +4,11 @@ from konlpy.tag import Komoran
 from ckonlpy.tag import Twitter
 import os, re, ast
 import utils
-import ner
+#import ner
 
-model = ner.loadModel()
+import recipe_spell as rs
+
+#model = ner.loadModel()
 
 def dishNameExtract(dishNames, ingreds):
     dishNameList = []
@@ -53,6 +55,7 @@ def process():
                 # 요리명
                 dish = N.process(d[2])
 
+                '''
                 tempDish = []
                 doc = model(dish)
                 for entity in doc.ents:
@@ -60,8 +63,9 @@ def process():
                         tempDish.append(entity.text)
 
                 dish = ' '.join(tempDish)
+                '''
 
-                if dish == '' or len(dish) > 10:
+                if dish == '' or len(dish) > 100:
                     continue
             
                 # 재료
@@ -74,7 +78,7 @@ def process():
                 if d[7] == '[]':
                     continue
                 recipe = ast.literal_eval(d[7])     # list
-                # process
+                recipe = rs.process(recipe)
 
                 if d[8] == '[]':
                     continue
