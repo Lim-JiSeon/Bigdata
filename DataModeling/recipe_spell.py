@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import os
-import sys
-import urllib.request
-import json
-import kss
-from kss import split_sentences
-import pandas as pd
-import numpy as np
+#import os
+#import sys
+#import urllib.request
+#import json
+#import kss
+#from kss import split_sentences
+#import pandas as pd
+#import numpy as np
 import re
 #from hanspell import spell_checker
 from kiwipiepy import Kiwi
@@ -171,8 +171,8 @@ def process(recipe_list):
     return processed_recipe
 
 
-recipe_list = ['1. 양념장을 먼저 만들어 준비해 주세요 \n고추장2스푼 고춧가루2스푼 \n간장2스푼 설탕1스푼 매실청2스푼\n다진마늘1스푼 후춧가루 톡톡톡톡\n고루 잘 섞어 주세요매실청 없으신 분은 맛술 대체하세요 ', '2. 달궈진 후라이팬에 기름을 살짝 두르고 고기를 올려주세요 ', '3. 고기가 반 정도 익을 때 까지 볶아준뒤 중불 ', '4. 잘라놓은 대파 2대중 1대를 고기위로 넣고 같이 볶아 주세요 중불 ', '5. 파와 고기가 잘 섞여 반쯤 익어있던 고기가 다 익으면 양파를 넣어주세요 중불 ', '6. 양파를 넣은뒤 곧바로 양념장을 넣고 잘 섞어가며 볶아줍니다 중불 ', '7. 양념장이 고기와 잘 섞여지면 중약불 ', '8. 굴소스 1스푼과 중약불 ', '9. 남아있던 대파1대 청양고추를 넣고 중불 ', '10. 마지막으로 고루 섞어가며 휘리릭 볶아주면 제육볶음 완성입니다^^ 중불 ']
-print(process(recipe_list))
+#recipe_list = ['1. 양념장을 먼저 만들어 준비해 주세요 \n고추장2스푼 고춧가루2스푼 \n간장2스푼 설탕1스푼 매실청2스푼\n다진마늘1스푼 후춧가루 톡톡톡톡\n고루 잘 섞어 주세요매실청 없으신 분은 맛술 대체하세요 ', '2. 달궈진 후라이팬에 기름을 살짝 두르고 고기를 올려주세요 ', '3. 고기가 반 정도 익을 때 까지 볶아준뒤 중불 ', '4. 잘라놓은 대파 2대중 1대를 고기위로 넣고 같이 볶아 주세요 중불 ', '5. 파와 고기가 잘 섞여 반쯤 익어있던 고기가 다 익으면 양파를 넣어주세요 중불 ', '6. 양파를 넣은뒤 곧바로 양념장을 넣고 잘 섞어가며 볶아줍니다 중불 ', '7. 양념장이 고기와 잘 섞여지면 중약불 ', '8. 굴소스 1스푼과 중약불 ', '9. 남아있던 대파1대 청양고추를 넣고 중불 ', '10. 마지막으로 고루 섞어가며 휘리릭 볶아주면 제육볶음 완성입니다^^ 중불 ']
+#print(process(recipe_list))
 
 
 
