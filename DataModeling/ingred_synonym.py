@@ -7,7 +7,7 @@ df = pd.read_excel('조리법_필터링_종합2.xlsx')
 
 sample_index = 11
 sample_title = df['조리법'][sample_index]
-# print(sample_title)
+print(sample_title)
 
 sample_content = df['조리법'][sample_index]
 print(sample_content)
@@ -23,16 +23,17 @@ def preprocessing(text):
     text = re.sub('[^가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z]', ' ', text)
     return text
 
-sample_content = preprocessing(sample_content)
-print(sample_content[:1000])
+def tokenize(recipe_content):
+    sample_content = preprocessing(recipe_content)
+    # print(sample_content[:1000])
 
 
-tokenizer = RegexTokenizer()
-print(tokenizer)
+    tokenizer = RegexTokenizer()
+    # print(tokenizer)
 
-# 전처리 이전의 샘플 텍스트로 토큰화
-tokened_title = tokenizer.tokenize(sample_title)
-print(tokened_title)
+    # 전처리 이전의 샘플 텍스트로 토큰화
+    tokened_title = tokenizer.tokenize(sample_title)
+    # print(tokened_title)
 
 # 전처리 이후의 샘플 텍스트로 토큰화
 tokened_content = tokenizer.tokenize(sample_content)
@@ -59,7 +60,7 @@ from gensim.models import word2vec
 
 # 모델 학습
 model = word2vec.Word2Vec(tokens, min_count=0)
-
+model.save('word2vec_syn.model')
 
 ### 재료사전 불러오기
 df2 = pd.read_excel('재료사전.xlsx')
