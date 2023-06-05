@@ -1,80 +1,47 @@
 from tkinter import filedialog, Tk
-#from konlpy.tag import Komoran
+from konlpy.tag import Komoran
 from pykospacing import Spacing
 import pandas as pd
 import os, re
 
 class Normalize:    # 정규화 함수
     def __init__(self):
-        self.stopwords_1 = readFile(os.getcwd(), 'Stopwords_1.txt')
-        self.stopwords_2 = readFile(os.getcwd(), 'Stopwords_2.txt')
-        self.findwords = readFile(os.getcwd(), 'Findwords.txt')
-        for i in range(len(self.stopwords_1)):
-            self.stopwords_1[i] = self.stopwords_1[i].replace('\n', '')
-        for i in range(len(self.stopwords_2)):
-            self.stopwords_2[i] = self.stopwords_2[i].replace('\n', '')
-        for i in range(len(self.findwords)):
-            self.findwords[i] = self.findwords[i].replace('\n', '')
-        #self.komoran = Komoran()
+        stopwords = readFile(os.getcwd(), 'Stopwords.txt')
+
+        self.stopwords = {}
+        for s in stopwords:
+            self.stopwords[s] = 0
+        self.komoran = Komoran()
         self.spacing = Spacing()
 
-    def process(self, text, opt = 1):
+    def process(self, text, opt = 0):
         text = self.stripSCharacter(text)
         if text == '':
             return text
         text = self.resentense(text)
-        if text == '':
-            return text
-        if opt == 1:
-            text = self.removeStopword(text)
-            if text == '':
-                return text
-            text = self.removeStopword(text, 1)
-            return text
-        else:
-            text = self.findWord(text)
-            return text
+        if opt == 0:
+            text = self.tagging(text)
+        text = self.removeStopword(text)
+        return text
 
-    def stripSCharacter(self, text):                # 한글만 남기기
+    def stripSCharacter(self, text):        # 한글만 남기기
         return re.sub('[^가-힣\s]', '', text)       
 
-    def removeStopword(self, text, opt = 0):        # 불용어 제거
-        if opt == 0:
-            words = text.split()
-            newWords = []
-            for word in words:
-                keep = True
-                for s in self.stopwords_1:
-                    if word == s:
-                        keep = False
-                        break
-                if keep:
-                    newWords.append(word)
-            return ' '.join(newWords)
-        else:
-            words = text.split()
-            newWords = []
-            for word in words:
-                keep = True
-                for s in self.stopwords_2:
-                    if word.find(s) != -1:
-                        keep = False
-                        break
-                if keep:
-                    newWords.append(word)
-            return ' '.join(newWords)
-
-    def findWord(self, text):
+    def removeStopword(self, text):         # 불용어 제거
         words = text.split()
         newWords = []
         for word in words:
-            for f in self.findwords:
-                if word == f:
-                    newWords.append(word)
+            if word in self.stopwords:
+                continue
+            newWords.append(word)
         return ' '.join(newWords)
 
     def resentense(self, text):
+        text = text.replace(' ', '')
         return self.spacing(text) 
+
+    def tagging(self, text):
+        return ' '.join(self.komoran.nouns(text))
 
 def filePaths(opt = 1):
     root = Tk()
