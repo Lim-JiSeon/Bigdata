@@ -93,6 +93,7 @@ for i in range(len(df2)):
         pass
 
 
+
 df2 = df2.groupby('재료').sum().reset_index()
 # df2 = df2.groupby('재료', as_index=False)['재료'].sum()
 

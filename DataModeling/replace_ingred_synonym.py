@@ -23,3 +23,4 @@ def replace_similar_words(text):
 
     return '\n'.join(ingredients)
 
+
