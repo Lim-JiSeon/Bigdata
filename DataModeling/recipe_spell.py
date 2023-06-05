@@ -26,7 +26,7 @@ def process(recipe):
     return newLines
 '''
 
-df = pd.read_excel('F4301_T4400.xlsx')
+# df = pd.read_excel('F4301_T4400.xlsx')
 # print(df['조리법'])
 
 # def remove_numeric_prefix(string):
@@ -109,60 +109,67 @@ def remove_trailing_chars(string):
         result = string
     return result
 
+def space_tip(result):
+    # 첫 번째 "tip)"의 위치를 찾습니다
+    first_index = result.find("tip)")
+
+    # 두 번째 "tip)"의 위치를 찾습니다
+    second_index = result.find("tip)", first_index + 1)
+
+    # 두 번째 "tip)"을 "\ntip)"로 변경합니다
+    if second_index != -1:
+        result = result[:second_index] + "\n" + result[second_index:]
+
+    print(result)
+
 
 
 # 조리법 칼럼에서 특수문자 제거
-df['조리법'] = df['조리법'].str.replace(pat=r'[^\w\s/~,.()\n%:]', repl=r'', regex=True)
-df['조리법'] = df['조리법'].str.replace('n', '', regex=True)
-# df['조리법'] = df['조리법'].str.replace(pat=r'[a-zA-Z^cmlkg]+', repl= r'', regex=True)
-# df['조리법'] = df['조리법'].str.replace(r"[a-zA-Z]", "")
-# new_str = re.sub(r"[a-zA-Z]", "", str(df['조리법']))
-# df['조리법'] = new_str
+def clean_recipe_text(recipe_list):
+    # cleaned_list = []
+    cleaned_text = ' '.join(map(str, recipe_list))
+    cleaned_text = cleaned_text.replace(r'[^\w\s.]', r'')
+    cleaned_text = cleaned_text.replace(r'[a-zA-Z]+', r'')
+    # for text in recipe_list:
+    #     cleaned_text = re.sub(r'[^\w\s/~,.()\n%:]', '', text)
+    #     cleaned_text = cleaned_text.replace('n', '')
+        # cleaned_list.append(cleaned_text)
+    return cleaned_text
 
-print(df['조리법'])
-recipe = df["조리법"]
-
-df = df.dropna(axis=0)
+# df = df.dropna(axis=0)
 
 
 # 문장 분리
-kiwi = Kiwi()
+def preprocess_recipe_text(recipe_text):
+    kiwi = Kiwi()
+    sentence_list = kiwi.split_into_sents(recipe_text)
+    processed_recipe = ""
 
-# res = kiwi.split_into_sents(df['조리법'][0])
-# print(res)
-# res1 = ""
-# for i in range(0, len(res)):
-#     res1 = res1 + str(res[i].text) + '\n'
-# print(res1)
+    for sentence in sentence_list:
+        processed_recipe += sentence.text + "\n"
+    processed_recipe = add_numbers(processed_recipe)
+    processed_recipe = add_tip(processed_recipe)
+    processed_recipe = rearrange_string(processed_recipe)
+    processed_recipe = fill_missing_numbers(processed_recipe)
+    processed_recipe = replace_numbers(processed_recipe)
+    processed_recipe = rearrange_string(processed_recipe)
 
-df["조리법_spell"] = 0
+    processed_recipe = processed_recipe.replace(",\n", "")
+    processed_recipe = processed_recipe.replace("xa0", "")
+    # processed_recipe = processed_recipe.replace("tip) (\ntip)", "tip)")
+    # processed_recipe = space_tip(processed_recipe)
 
-
-for i in range(0, len(df['조리법'])):
-    sentence = kiwi.split_into_sents(df['조리법'][i])
-    # print(sentence)
-    for j in range(0, len(sentence)):
-        # print(sentence[j].text)
-        # res = str(sentence[j].text).lstrip('[^0-9]')   # 문장 나눠졌을 때 한 문장 당 숫자 선행문자 제거
-        # res = str(res).lstrip('[^\w]')
-
-        # res = remove_prefix_before_numeric(str(sentence[j].text))
-        df['조리법_spell'][i] = str(df['조리법_spell'][i]) + str(sentence[j].text) + "\n"
-    df['조리법_spell'][i] = add_numbers(str(df['조리법_spell'][i]))
-    df['조리법_spell'][i] = add_tip(str(df['조리법_spell'][i]))
-    df['조리법_spell'][i] = rearrange_string(str(df['조리법_spell'][i]))
-    df['조리법_spell'][i] = fill_missing_numbers(str(df['조리법_spell'][i]))
-    df['조리법_spell'][i] = replace_numbers(str(df['조리법_spell'][i]))
-    df['조리법_spell'][i] = rearrange_string(str(df['조리법_spell'][i]))
-    # df['조리법_spell'][i] = remove_trailing_chars(str(df['조리법_spell'][i]))
-df['조리법_spell'] = df['조리법_spell'].replace(",\n","", regex=True)
-df['조리법_spell'] = df['조리법_spell'].replace("xa0","", regex=True)
-# df['조리법_spell'] = df['조리법_spell'].replace("\n\n","\n", regex=True)
-# df['조리법_spell'] = add_numbers(str(df['조리법_spell']))
-print(df['조리법_spell'])
+    return processed_recipe
 
 
-df.to_csv('조리법_교정(kiwi)ver10.csv', encoding='utf-8', index = None)
+recipe_list = ['1. 양념장을 먼저 만들어 준비해 주세요 \n고추장2스푼 고춧가루2스푼 \n간장2스푼 설탕1스푼 매실청2스푼\n다진마늘1스푼 후춧가루 톡톡톡톡\n고루 잘 섞어 주세요매실청 없으신 분은 맛술 대체하세요 ', '2. 달궈진 후라이팬에 기름을 살짝 두르고 고기를 올려주세요 ', '3. 고기가 반 정도 익을 때 까지 볶아준뒤 중불 ', '4. 잘라놓은 대파 2대중 1대를 고기위로 넣고 같이 볶아 주세요 중불 ', '5. 파와 고기가 잘 섞여 반쯤 익어있던 고기가 다 익으면 양파를 넣어주세요 중불 ', '6. 양파를 넣은뒤 곧바로 양념장을 넣고 잘 섞어가며 볶아줍니다 중불 ', '7. 양념장이 고기와 잘 섞여지면 중약불 ', '8. 굴소스 1스푼과 중약불 ', '9. 남아있던 대파1대 청양고추를 넣고 중불 ', '10. 마지막으로 고루 섞어가며 휘리릭 볶아주면 제육볶음 완성입니다^^ 중불 ']
+cleaned_recipe_text = clean_recipe_text(recipe_list)
+# print(cleaned_recipe_text)
+processed_recipe = preprocess_recipe_text(cleaned_recipe_text)
+print(processed_recipe)
+
+
+# df.to_csv('조리법_교정(kiwi)ver10.csv', encoding='utf-8', index = None)
 
 
 
