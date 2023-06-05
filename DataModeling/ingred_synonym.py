@@ -23,17 +23,17 @@ def preprocessing(text):
     text = re.sub('[^가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z]', ' ', text)
     return text
 
-def tokenize(recipe_content):
-    sample_content = preprocessing(recipe_content)
-    # print(sample_content[:1000])
+
+sample_content = preprocessing(sample_content)
+# print(sample_content[:1000])
 
 
-    tokenizer = RegexTokenizer()
-    # print(tokenizer)
+tokenizer = RegexTokenizer()
+# print(tokenizer)
 
-    # 전처리 이전의 샘플 텍스트로 토큰화
-    tokened_title = tokenizer.tokenize(sample_title)
-    # print(tokened_title)
+# 전처리 이전의 샘플 텍스트로 토큰화
+tokened_title = tokenizer.tokenize(sample_title)
+# print(tokened_title)
 
 # 전처리 이후의 샘플 텍스트로 토큰화
 tokened_content = tokenizer.tokenize(sample_content)
