@@ -58,5 +58,5 @@ def standard(origin, target, label):
     res = (newOrigin, {'entities' : entities})
     return str(res)
 
-N = utils.Normalize()
+N = utils.useN()
 txtLabels()

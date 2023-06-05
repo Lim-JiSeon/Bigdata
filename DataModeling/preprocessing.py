@@ -7,7 +7,7 @@ import utils
 
 def process1():
     #print('재료 단위 제거')
-    #N = utils.Normalize()
+    #N = utils.useN()
 
     fp, fn = utils.filePaths(2)
     for p, n in zip(fp, fn): 
