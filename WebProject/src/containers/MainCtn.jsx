@@ -94,7 +94,7 @@ function MainCtn() {
               {ImgArray}
             </Style.ImgList>
             <Link to="../pages/Input"><Style.BtnWrap>
-              <Style.StartBtn onClick={test}>시작하기</Style.StartBtn>
+              <Style.StartBtn>시작하기</Style.StartBtn>
             </Style.BtnWrap></Link>
         </Style.Intro>
       </Style.Wrapper>
