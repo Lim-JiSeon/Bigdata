@@ -35,7 +35,7 @@ def extract(model, fp = None, fn = None):
         dish = []
         for line in text:
             if line != '':
-                line = N.process(line)
+                line = N.process(line, 1)
                 temp = []
                 doc = model(line)
                 for entity in doc.ents:
