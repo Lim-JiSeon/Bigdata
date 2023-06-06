@@ -1,13 +1,12 @@
 import styled from "styled-components";
 
-function InputCtn() {
-    
-  const Style = {
-    Wrapper: styled.div`
-      flex: 1;
-    `,
-  }  
+const Style = {
+  Wrapper: styled.div`
+    flex: 1;
+  `,
+};
 
+function InputCtn() {
   return (
     <>
       <Style.Wrapper>
