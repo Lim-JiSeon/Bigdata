@@ -11,3 +11,5 @@
 /DataModeling/ner_model
 /DataModeling/hanspell
 /DataModeling/traindata
+/DataModeling/searchdata
+/DataModeling/class(p).txt
