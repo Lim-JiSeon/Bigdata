@@ -74,7 +74,7 @@ else:
 
 	RECIPE_ds = dict(sorted(RECIPE_ds.items()))
 
-	classes = utils.readFile(p, 'class.txt')
+	classes = utils.readFile(os.getcwd(), 'class.txt')
 	'''
 	classes_cl = []
 	classes_rm = []
@@ -87,39 +87,48 @@ else:
 	# DISH.json
 	DISH_ds = {}
 	for KEY, i in RECIPE_ds.items():
-		for DISH in i['DISH']:
-			DISH_ds[DISH] = KEY
-	
+		DISH = i['DISH']
+		DISH_ds[DISH] = KEY
+
 	RECIPE_new_ds = {}
 	CLASS_ds = {}
 	for c in classes:
 		for KEY, i in RECIPE_ds.items():
-			for DISH in i['DISH']:
-				if DISH.find(c) != -1:
-					data = {
-						'DISH'	:	DISH,
-						'KEY'	:	KEY
-					}
-					CLASS_ds[c] = data
-					RECIPE_new_ds[KEY] = i
+			DISH = i['DISH']
+			if DISH.find(c) != -1:
+				if c in CLASS_ds:
+					CLASS_ds[c].append(KEY)
+				else:
+					CLASS_ds[c] = [KEY]
+				RECIPE_new_ds[KEY] = i
 
 	# INGREDIENT.json
+	fp, fn = utils.filePaths(2)
+	for p, n in zip(fp, fn): 
+		df = utils.readFile(p, n, 2)
+		ingreds = df['Àç·á'].tolist()
+		counts = df['ºóµµ¼ö'].tolist()
+
+	ingreds_d = {}
+	for i, c in zip(ingreds, counts):
+		if c >= 250:
+			ingreds_d[i] = 1
+
 	INGREDIENT_ds = {}
-	ingreds = []
 	for KEY, i in RECIPE_new_ds.items():
 		for j in i['INGR']:
 			ingred = j[1]
-			if ingred not in INGREDIENT_ds:
-				INGREDIENT_ds[ingred] = [KEY]
-				ingreds.append(ingred)
-			else:
-				INGREDIENT_ds[ingred].append(KEY)
+			if ingred in ingreds_d:
+				if ingred not in INGREDIENT_ds:
+					INGREDIENT_ds[ingred] = [KEY]
+				else:
+					INGREDIENT_ds[ingred].append(KEY)
 
-	for i in ingreds:
+	for i in list(INGREDIENT_ds.keys()):
 		INGREDIENT_ds[i].sort()
 
 	with open('RECIPE.json', 'w') as f:
-		json.dump(RECIPE_ds, f)
+		json.dump(RECIPE_new_ds, f)
 	with open('DISH.json', 'w') as f:
 		json.dump(CLASS_ds, f)
 	with open('INGREDIENT.json', 'w') as f:
