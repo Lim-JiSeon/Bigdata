@@ -28,6 +28,9 @@ if opt == 1:	# excel -> json
 				# RECP
 				RECP = {}
 				for rc in ast.literal_eval(d[7]):
+					# tip) Á¦°Å
+					if rc[0] == 't':
+						continue
 					e = 0
 					while rc[e] != '.':
 						e += 1
@@ -71,10 +74,39 @@ else:
 
 	RECIPE_ds = dict(sorted(RECIPE_ds.items()))
 
+	classes = utils.readFile(p, 'class.txt')
+	'''
+	classes_cl = []
+	classes_rm = []
+	for c in classes:
+		temp = c.split()
+		classes_cl.append(temp[0])
+		if len(temp) == 2:
+			classes_rm.append(temp[0])
+	'''
+	# DISH.json
+	DISH_ds = {}
+	for KEY, i in RECIPE_ds.items():
+		for DISH in i['DISH']:
+			DISH_ds[DISH] = KEY
+	
+	RECIPE_new_ds = {}
+	CLASS_ds = {}
+	for c in classes:
+		for KEY, i in RECIPE_ds.items():
+			for DISH in i['DISH']:
+				if DISH.find(c) != -1:
+					data = {
+						'DISH'	:	DISH,
+						'KEY'	:	KEY
+					}
+					CLASS_ds[c] = data
+					RECIPE_new_ds[KEY] = i
+
 	# INGREDIENT.json
 	INGREDIENT_ds = {}
 	ingreds = []
-	for KEY, i in RECIPE_ds.items():
+	for KEY, i in RECIPE_new_ds.items():
 		for j in i['INGR']:
 			ingred = j[1]
 			if ingred not in INGREDIENT_ds:
@@ -86,16 +118,11 @@ else:
 	for i in ingreds:
 		INGREDIENT_ds[i].sort()
 
-	# DISH.json
-	DISH_ds = {}
-	for KEY, i in RECIPE_ds.items():
-		for dish in i['DISH']:
-			if dish not in DISH_ds:
-				DISH_ds[dish] = KEY
-
 	with open('RECIPE.json', 'w') as f:
 		json.dump(RECIPE_ds, f)
+	with open('DISH.json', 'w') as f:
+		json.dump(CLASS_ds, f)
 	with open('INGREDIENT.json', 'w') as f:
 		json.dump(INGREDIENT_ds, f)
-	with open('DISH.json', 'w') as f:
-		json.dump(DISH_ds, f)
+	with open('CLASSES.json', 'w') as f:
+		json.dump(classes, f)

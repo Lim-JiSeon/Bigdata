@@ -43,6 +43,7 @@ def process():
     print('필터링된 데이터 선택\n')
     fp, fn = utils.filePaths(2) # 요리명을 추출할 엑셀파일 열기
     for p, n in zip(fp, fn): 
+        print(n)
         df = utils.readFile(p, n, 2)
         ds = df.values.tolist()
 
@@ -57,7 +58,7 @@ def process():
                 #    if entity.label_ == 'DISH':
                 #        words.append(entity.text)
 
-                dish = N.process(d[2])
+                dish = N.process(d[2], 1)
                 if dish == '':
                     continue
                 dish = ' '.join(list(OrderedDict.fromkeys(dish.split())))
@@ -95,7 +96,10 @@ def process():
             
             # 모든 데이터가 온전한 경우만 저장
             if not(d[3] == 'X' or d[4] == 'X' or d[5] == 'X'):
-                newDt.append([d[0], d[1], dish, d[3], d[4], d[5], ingreds, recipe, recipe_pt])
+                nowDt = [d[0], d[1], dish, d[3], d[4], d[5], ingreds, recipe, recipe_pt]
+                #print(nowDt)
+                #print('===================================================================================================')
+                newDt.append(nowDt)
 
         name = n[2 : ]
         utils.saveFile(os.getcwd(), f'3_{name}', newDt, 2, df.columns)
