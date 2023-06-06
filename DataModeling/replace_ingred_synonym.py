@@ -1,13 +1,14 @@
-import pandas as pd
-import numpy as np
-import re
-from soynlp.tokenizer import RegexTokenizer
+#import pandas as pd
+#import numpy as np
+#import re
+#from soynlp.tokenizer import RegexTokenizer
 from gensim.models import word2vec
 
-def replace_similar_words(text):
+def useModel():
     # 직접 학습시킨 word2vec 모델 불러오기
-    model = word2vec.Word2Vec.load('word2vec_syn.model')
+    return word2vec.Word2Vec.load('word2vec_syn.model')
 
+def replace_similar_words(model, text):
     # 재료 한 번에 입력 가능(\n으로 구분) ex) 소금\n양파\n설탕\n다진마늘\n참기름
     ingredients = text.split('\n')
     for i in range(len(ingredients)):
@@ -23,5 +24,3 @@ def replace_similar_words(text):
             pass
 
     return '\n'.join(ingredients)
-
-
