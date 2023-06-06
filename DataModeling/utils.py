@@ -19,7 +19,7 @@ class Normalize:    # 정규화 함수
         if text == '':
             return text
         text = self.resentense(text)
-        if opt == 0:
+        if opt == 1:
             text = self.tagging(text)
         text = self.removeStopword(text)
         return text

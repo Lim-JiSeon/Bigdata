@@ -1,6 +1,7 @@
 # -*- encoding= cp949 -*-
 
-from konlpy.tag import Komoran
+from collections import OrderedDict
+import replace_ingred_synonym as syn
 import recipe_spell as rs
 import os, re, ast
 import utils
@@ -26,6 +27,17 @@ def process():
     ingreds_ds += utils.readFile(os.getcwd(), '3. Ingreds.txt')
     '''
     N = utils.useN()
+    model = syn.useModel()
+
+    ingr_dict = {}
+    type_dict = {}
+    print('재료사전 선택')
+    fp, fn = utils.filePaths(2)
+    for p, n in zip(fp, fn): 
+        df = utils.readFile(p, n, 2).values.tolist()
+        for l in df:
+            ingr_dict[l[1]] = int(l[2])
+            type_dict[l[1]] = l[3]
 
     print('엑셀파일 선택(여러개 선택 가능)')
     print('필터링된 데이터 선택\n')
@@ -38,32 +50,41 @@ def process():
         for d in ds:
             try:    # 데이터 손실이 일어났을 경우를 대비
                 # 요리명
+                
+                #words = []
+                #doc = model(dish)
+                #for entity in doc.ents:
+                #    if entity.label_ == 'DISH':
+                #        words.append(entity.text)
+
                 dish = N.process(d[2])
-
-                '''
-                tempDish = []
-                doc = model(dish)
-                for entity in doc.ents:
-                    if entity.label_ == 'DISH':
-                        tempDish.append(entity.text)
-
-                dish = ' '.join(tempDish)
-                '''
-
-                if dish == '' or len(dish) > 100:
+                if dish == '':
                     continue
-            
+                dish = ' '.join(list(OrderedDict.fromkeys(dish.split())))
+
                 # 재료
                 if d[6] == '[]':
                     continue
-                ingreds = ast.literal_eval(d[6])    # list
-                # process
+                newIngreds = []
+                ingreds = ast.literal_eval(d[6])
+                for i in ingreds:
+                    sim = syn.replace_similar_words(model, i[1])
+                    if sim in ingr_dict and i[1] in ingr_dict:
+                        if ingr_dict[sim] > ingr_dict[i[1]]:
+                            i[0] = type_dict[sim]
+                            i[1] = sim
+                    elif sim in ingr_dict:
+                        i[0] = type_dict[sim]
+                        i[1] = sim                        
+                    newIngreds.append(i)
+
+                ingreds = newIngreds
 
                 # 레시피
                 if d[7] == '[]':
                     continue
-                recipe = ast.literal_eval(d[7])     # list
-                recipe = rs.process(recipe)
+                recipe = ast.literal_eval(d[7])
+                recipe = [line for line in rs.process(recipe).split('\n') if line != '']
 
                 if d[8] == '[]':
                     continue
@@ -79,5 +100,4 @@ def process():
         name = n[2 : ]
         utils.saveFile(os.getcwd(), f'3_{name}', newDt, 2, df.columns)
 
-tagging = Komoran()
 process()
