@@ -8,3 +8,8 @@
 /DataModeling/.vs/DataModeling/v17
 /DataModeling/.vs
 /DataModeling/__pycache__
+/DataModeling/ner_model
+/DataModeling/hanspell
+/DataModeling/traindata
+/DataModeling/searchdata
+/DataModeling/class(p).txt

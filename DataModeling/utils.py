@@ -1,53 +1,47 @@
 from tkinter import filedialog, Tk
 from konlpy.tag import Komoran
+from pykospacing import Spacing
 import pandas as pd
 import os, re
 
 class Normalize:    # 정규화 함수
     def __init__(self):
-        self.stopwords = readFile(os.getcwd(), '1. Stopwords.txt')
-        for i in range(len(self.stopwords)):
-            self.stopwords[i] = self.stopwords[i].replace('\n', '')
-        self.komoran = Komoran()
+        stopwords = readFile(os.getcwd(), 'Stopwords.txt')
 
-    def process(self, text):
+        self.stopwords = {}
+        for s in stopwords:
+            self.stopwords[s] = 0
+        self.komoran = Komoran()
+        self.spacing = Spacing()
+
+    def process(self, text, opt = 0):
         text = self.stripSCharacter(text)
         if text == '':
             return text
+        text = self.resentense(text)
+        if opt == 1:
+            text = self.tagging(text)
         text = self.removeStopword(text)
-        if text == '':
-            return text
-        text = self.lowercase(text)
-        if text == '':
-            return text
-        #text = self.lowercase(text)
-        text = self.tagging(text)
         return text
 
-    def stripSCharacter(self, text):        # 특수문자 제거
-        return re.sub('[^ㄱ-ㅎ가-힣a-zA-Z0-9\s]', '', text)
+    def stripSCharacter(self, text):        # 한글만 남기기
+        return re.sub('[^가-힣\s]', '', text)       
 
     def removeStopword(self, text):         # 불용어 제거
         words = text.split()
         newWords = []
         for word in words:
-            keep = True
-            for s in self.stopwords:
-                if word.find(s) != -1:
-                    keep = False
-                    break
-            if keep:
-                newWords.append(word)
+            if word in self.stopwords:
+                continue
+            newWords.append(word)
         return ' '.join(newWords)
-        #return ' '.join([word for word in newWords if word.lower() not in self.stopwords])
 
-    def lowercase(self, text):              # 소문자화
-        words = text.split()
-        return ' '.join([word.lower() for word in words])
-    
+    def resentense(self, text):
+        text = text.replace(' ', '')
+        return self.spacing(text) 
+
     def tagging(self, text):
-        words = text.split()
-        return ' '.join([word for word in words if self.komoran.pos(word)[0][1] == 'NNP'])
+        return ' '.join(self.komoran.nouns(text))
 
 def filePaths(opt = 1):
     root = Tk()
@@ -57,6 +51,8 @@ def filePaths(opt = 1):
         fullPaths = filedialog.askopenfilenames(title = 'Select txt Files', initialdir = os.getcwd(), filetypes = [("Text files", "*.txt"), ("All files", "*.*")])
     elif opt == 2:
         fullPaths = filedialog.askopenfilenames(title = 'Select Excel File', initialdir = os.getcwd(), filetypes=[('Excel files',('*.csv', '*.xlsx')), ("All files", "*.*")])
+    elif opt == 3:
+        fullPaths = filedialog.askopenfilenames(title = 'Select Excel File', initialdir = os.getcwd(), filetypes=[('JSON files', ('*.json')), ("All files", "*.*")])
 
     paths, names = [], []
     for p in fullPaths:
@@ -68,7 +64,7 @@ def filePaths(opt = 1):
 
 def readFile(path, name, opt = 1):
     if opt == 1:
-        with open(f'{path}/{name}', 'r', encoding = 'cp949') as f:
+        with open(f'{path}/{name}', 'r', encoding = 'utf8') as f:
             data = f.readlines()
         for i in range(len(data)):
             data[i] = data[i].replace('\n', '')
@@ -79,9 +75,12 @@ def readFile(path, name, opt = 1):
 
 def saveFile(path, name, data, opt = 1, cols = None):
     if opt == 1:
-        with open(f'{path}/{name}', 'w', encoding ='cp949') as f:
+        with open(f'{path}/{name}', 'w', encoding ='utf8') as f:
             for line in data:
                 f.write(line + '\n')
     elif opt == 2:
         df = pd.DataFrame(data, columns = cols)
         df.to_excel(f'{path}/{name}', index = False)
+
+def useN():
+    return Normalize()

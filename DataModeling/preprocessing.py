@@ -5,26 +5,29 @@ import numpy as np
 import ast, os
 import utils
 
-def process1(): # 한번에 여러 파일 읽도록 수정 예정
+def process1():
+    #print('재료 단위 제거')
+    #N = utils.useN()
+
     fp, fn = utils.filePaths(2)
     for p, n in zip(fp, fn): 
         data = utils.readFile(p, n, 2).values.tolist()
         
-        print('재료 단위 제거')
-        N = utils.Normalize()
-
+        # filter
         subDt = []
         for d in data:
             minT = d[4].find('분')
-            if minT != -1 and int(d[4][ : minT]) <= 30 and d[5] in ['아무나', '초급']:
-                if d[3] != 'X' and int(d[3].replace('인분', '')) <= 3:
+            if minT != -1 and int(d[4][ : minT]) <= 30 and d[5] in ['아무나', '초급']:   # 30분 이내 + 아무나, 초급 난이도
+                if d[3] != 'X' and int(d[3][0]) <= 3:                   # 3인분 이내
                     subDt.append(d)
 
-        df = utils.makeDf(subDt, ['Key', '메인사진', '요리명', '인분', '소요시간', '난이도', '재료', '조리법', '조리사진'])
-        utils.saveFile(os.getcwd(), f'1_{n}', df, 2)
+        utils.saveFile(os.getcwd(), f'1_{n}', subDt, 2, ['Key', '메인사진', '요리명', '인분', '소요시간', '난이도', '재료', '조리법', '조리사진'])
 
-        subDt = np.array(subDt)
-
+        opt = 0
+        if opt == 1:    # 필터링 적용
+            subDt = np.array(subDt)
+        else:           # 필터링 미적용
+            subDt = np.array(data)
         ingred = np.transpose(subDt[ : , 6 : 7]).tolist()[0]
         ingred_dict = []
         for i in ingred:
@@ -34,33 +37,49 @@ def process1(): # 한번에 여러 파일 읽도록 수정 예정
                 continue
 
         ingreds = []
+        conds = []
+        for ingr in ingred_dict:
+            for i in ingr:
+                if i == []:
+                    continue
+                attr = i[0]
+                if attr == '재료':
+                    ingreds.append(i[1])
+                elif attr == '양념':
+                    conds.append(i[1])
+
+        # normalize 진행시
+        '''
         for i in ingred_dict:
             for j in i:
                 ingred = N.process(' '.join(j)).split()
                 ingreds.append(''.join(ingred))
-
-        # count 및 재료명 저장 부분 수정 필요
+        '''
+        dt = []
         counts = Counter(ingreds)
 
         counts_key = list(counts.keys())
         counts_val = list(counts.values())
-
-        param = []
         for i in range(len(counts_key)):
-            param.append([counts_key[i], counts_val[i]])  
-    
-        df = utils.makeDf(param, ['재료', '빈도수'])
-        utils.saveFile(os.getcwd(), f'2_{n}', df, 2)
+            dt.append([counts_key[i], counts_val[i], '재료'])  
 
+        counts = Counter(conds)
+
+        counts_key = list(counts.keys())
+        counts_val = list(counts.values())
+        for i in range(len(counts_key)):
+            dt.append([counts_key[i], counts_val[i], '양념'])
+
+        dt.sort(key = lambda x : x[1], reverse = True)
+        utils.saveFile(os.getcwd(), f'2_{n}', dt, 2, ['재료', '빈도수', '속성'])
 
 def process2():
+    ingreds = [[], []]
+    counts = [[], []]
     fp, fn = utils.filePaths(2)
-
     for p, n in zip(fp, fn): 
         data = utils.readFile(p, n, 2).values.tolist()
 
-        ingreds = []
-        counts = []
         for d in data:
             d = np.array(d).transpose().tolist()
 
@@ -70,20 +89,41 @@ def process2():
 
             i = d[0]
             c = d[1]
-            if i in ingreds:
-                idx = ingreds.index(i)
-                counts[idx] += int(c)
+            a = d[2]
+            if a == '재료':
+                opt = 0
+            elif a == '양념':
+                opt = 1
+            
+            if i in ingreds[opt]:
+                idx = ingreds[opt].index(i)
+                counts[opt][idx] += int(c)
             else:
-                ingreds.append(i)
-                counts.append(int(c))
+                ingreds[opt].append(i)
+                counts[opt].append(int(c))
 
-        newData = []
-        for i in range(len(ingreds)):
-            newData.append([ingreds[i], counts[i]])
-        newData = sorted(newData, key=lambda x: x[1], reverse=True)
+    op = False
+    newData = []
+    if op:          # 양념 취급 받았던 재료 양념으로 넘기기
+        for o, a in enumerate(['재료', '양념']):
+            for i, c in zip(ingreds[o], counts[o]):
+                newData.append([i, c, a])
+    else:         
+        for i, c in zip(ingreds[0], counts[0]):
+            if i in ingreds[1]:
+                idx = ingreds[1].index(i)
+                if c <= counts[1][idx]:
+                    newData.append([i, c + counts[1][idx], '양념'])
+                else:
+                    newData.append([i, c + counts[1][idx], '재료'])
+            else:
+                newData.append([i, c, '재료'])
+        for i, c in zip(ingreds[1], counts[1]):
+            if i not in ingreds[0]:
+                newData.append([i, c, '양념'])
 
-    df = utils.makeDf(df, ['재료', '빈도수'])
-    utils.saveFile(os.getcwd(), '재료사전', df, 2)
+    newData = sorted(newData, key = lambda x: x[1], reverse=True)
+    utils.saveFile(os.getcwd(), '재료사전.xlsx', newData, 2, ['재료', '빈도수', '속성'])
 
 print('1. 소요시간, 난이도 필터링 및 재료 빈도수')
 print('2. 재료 빈도수 취합')

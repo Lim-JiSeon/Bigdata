@@ -25,12 +25,12 @@ def trySoup(url):
 def makeXlsx(dt):
     global xCount, divBy, page
     try:
-        folder = '10000recipeData'  # 엑셀 저장 폴더명
+        folder = os.getcwd() + '/10000recipeData'  # 엑셀 저장 폴더명
         os.mkdir(folder)
     except:
         pass
 
-    fileName = folder + '/F' + str(xCount * divBy + 1) + '_T' + str(page) + '.xlsx'
+    fileName = '/F' + str(xCount * divBy + 1) + '_T' + str(page) + '.xlsx'
     xCount += 1
 
     retry = 3
@@ -65,7 +65,7 @@ while not is_pages_end:
             if href:
                 print(idx, end = ' ', flush = True)
                 key = href.get("href").split('/')[2]
-                
+
                 subUrl = 'https://www.10000recipe.com/recipe/' + str(key)
                 subSoup = trySoup(subUrl)
 
@@ -84,12 +84,22 @@ while not is_pages_end:
                 sumInfo3 = getText(subSoup.select_one('#contents_area > div.view2_summary.st3 > div.view2_summary_info > span.view2_summary_info3'))    # 난이도
                 
                 ingredInfo = []     # 재료&양
-                for i in range(1, 3):
-                    ingreds_html = subSoup.select_one('#divConfirmedMaterialArea > ul:nth-child(' + str(i) + ')')
-                    if ingreds_html:
+                sub_html = subSoup.select_one('#divConfirmedMaterialArea')
+                if sub_html != None:
+                    ingreds_html = sub_html.contents[1]
+                    ingreds = ingreds_html.find_all('a')
+                    for i in ingreds[ : : 2]:
+                        ingred = ['재료'] + i.contents[1].text.split('\n')
+                        ingred = [' '.join(igd.split()) for igd in ingred[ : -1]]
+                        ingred.remove('구매')
+                        ingredInfo.append(ingred)
+
+                    if len(sub_html.contents) == 5:     # 재료, 양념 둘 다 있는 경우
+                        ingreds_html = sub_html.contents[3]
                         ingreds = ingreds_html.find_all('a')
-                        for i in range(0, len(ingreds), 2):
-                            ingred = ingreds[i].text.split()
+                        for i in ingreds[ : : 2]:
+                            ingred = ['양념'] + i.contents[1].text.split('\n')
+                            ingred = [' '.join(igd.split()) for igd in ingred[ : -1]]
                             ingred.remove('구매')
                             ingredInfo.append(ingred)
 

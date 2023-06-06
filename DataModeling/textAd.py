@@ -10,7 +10,7 @@ fp, fn = utils.filePaths()
 filePath = fp[0]
 fileName = fn[0]
 
-with open(fileName, 'r+', encoding = 'cp949') as f:
+with open(fileName, 'r+', encoding = 'utf8') as f:
     lines = f.readlines()
     lines = [line.rstrip('\n') for line in lines]
     print('\n')
