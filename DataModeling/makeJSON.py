@@ -42,7 +42,7 @@ if opt == 1:	# excel -> json
 					e = 0
 					while rp[e] != '.':
 						e += 1
-					RECP[int(rp[ : e])] = rp[e + 2 : ]
+					R_PHO[int(rp[ : e])] = rp[e + 2 : ]
 
 				data = {
 					'M_PHO'	:	d[1],
@@ -61,15 +61,15 @@ if opt == 1:	# excel -> json
 				continue
 
 		name = n.split("_", 1)[1].split(".")[0]
-		with open(f'{os.getcwd()}/{name}.json', 'w') as f:
-			json.dump(RECIPE_DS, f)
+		with open(f'{os.getcwd()}/{name}.json', 'w', encoding = 'utf-8') as f:
+			json.dump(RECIPE_DS, f, ensure_ascii = False)
 
 else:
 	# RECIPE.json
 	RECIPE_ds = {}
 	fp, fn =  utils.filePaths(3)
 	for p, n in zip(fp, fn): 
-		with open(f'{p}/{n}', 'r') as f:
+		with open(f'{p}/{n}', 'r', encoding = 'utf-8') as f:
 			RECIPE_ds.update(json.load(f))
 
 	RECIPE_ds = dict(sorted(RECIPE_ds.items()))
@@ -106,12 +106,13 @@ else:
 	fp, fn = utils.filePaths(2)
 	for p, n in zip(fp, fn): 
 		df = utils.readFile(p, n, 2)
+		attrs = df['속성'].tolist()
 		ingreds = df['재료'].tolist()
 		counts = df['빈도수'].tolist()
 
 	ingreds_d = {}
-	for i, c in zip(ingreds, counts):
-		if c >= 250:
+	for a, i, c in zip(attrs, ingreds, counts):
+		if c >= 250 and a == '재료':
 			ingreds_d[i] = 1
 
 	INGREDIENT_ds = {}
@@ -127,11 +128,11 @@ else:
 	for i in list(INGREDIENT_ds.keys()):
 		INGREDIENT_ds[i].sort()
 
-	with open('RECIPE.json', 'w') as f:
-		json.dump(RECIPE_new_ds, f)
-	with open('DISH.json', 'w') as f:
-		json.dump(CLASS_ds, f)
-	with open('INGREDIENT.json', 'w') as f:
-		json.dump(INGREDIENT_ds, f)
-	with open('CLASSES.json', 'w') as f:
-		json.dump(classes, f)
+	with open('RECIPE.json', 'w', encoding = 'utf-8') as f:
+		json.dump(RECIPE_new_ds, f, ensure_ascii = False)
+	with open('DISH.json', 'w', encoding = 'utf-8') as f:
+		json.dump(CLASS_ds, f, ensure_ascii = False)
+	with open('INGREDIENT.json', 'w', encoding = 'utf-8') as f:
+		json.dump(INGREDIENT_ds, f, ensure_ascii = False)
+	with open('CLASSES.json', 'w', encoding = 'utf-8') as f:
+		json.dump(classes, f, ensure_ascii = False)
