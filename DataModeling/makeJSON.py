@@ -72,6 +72,8 @@ if opt == 1:	# excel -> json
 			json.dump(RECIPE_DS, f, ensure_ascii = False)
 
 else:
+	MAX = 100
+
 	# RECIPE.json
 	RECIPE_ds = {}
 	fp, fn =  utils.filePaths(3)
@@ -102,12 +104,16 @@ else:
 	for c in classes:
 		for KEY, i in RECIPE_ds.items():
 			DISH = i['DISH']
-			if DISH.find(c) != -1:
+			if DISH_ds[DISH] == KEY and DISH.find(c) != -1:
 				if c in CLASS_ds:
 					CLASS_ds[c].append(KEY)
 				else:
 					CLASS_ds[c] = [KEY]
 				RECIPE_new_ds[KEY] = i
+
+	for c in classes:
+		if c in CLASS_ds and len(CLASS_ds[c]) > MAX:
+			CLASS_ds[c] = CLASS_ds[c][ : MAX]
 
 	# INGREDIENT.json
 	fp, fn = utils.filePaths(2)
@@ -133,6 +139,8 @@ else:
 					INGREDIENT_ds[ingred].append(KEY)
 
 	for i in list(INGREDIENT_ds.keys()):
+		if len(INGREDIENT_ds[i]) > MAX:
+			INGREDIENT_ds[i] = INGREDIENT_ds[i][ : MAX]
 		INGREDIENT_ds[i].sort()
 
 	with open('RECIPE.json', 'w', encoding = 'utf-8') as f:
