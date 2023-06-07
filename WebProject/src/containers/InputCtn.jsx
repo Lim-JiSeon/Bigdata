@@ -4,6 +4,8 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { useState } from "react";
+import img4 from "../img/img4.png";
+import img5 from "../img/img5.png";
 
 const Style = {
   Wrapper: styled.div`
@@ -48,7 +50,7 @@ const Style = {
     background: transparent;
   `,
   Img1: styled.img`
-    width: 25vw;
+    width: 15vw;
     padding: 5vh 5vh;
   `,
   Img2: styled.img`
@@ -145,11 +147,11 @@ function InputCtn() {
               type="text"
               onChange={(e) => {setDish(e.target.value)}}
             ></Style.Input>
-            <Style.Link to="../pages/RecipeList" state={{name: dish}}>
+            <Style.Link to="../pages/RecipeList" state={{name: dish, select: true}}>
               <Style.SearchBtn><FontAwesomeIcon icon={faMagnifyingGlass} size="3x" color="#B6E388"/></Style.SearchBtn>
             </Style.Link>
           </Style.InputWrap>
-          <Style.Img1 src="https://o.remove.bg/downloads/8fe3c827-8b39-4150-9ad6-5b6d6b8e6977/image-removebg-preview.png"></Style.Img1>
+          <Style.Img1 src={img4}></Style.Img1>
         </Style.Detail>
         : 
         <Style.Detail>
@@ -173,8 +175,8 @@ function InputCtn() {
             })}
           </Style.Tags>
         </Style.TagWrap>
-        <Style.Img2 src="https://o.remove.bg/downloads/b7ec8e7b-101f-49bb-8096-979fec9f936d/image-removebg-preview.png"></Style.Img2>
-        <Style.Link to="../pages/RecipeList" state={{name: tagLst}}><Style.SubmitBtn>레시피 찾기</Style.SubmitBtn></Style.Link>
+        <Style.Img2 src={img5}></Style.Img2>
+        <Style.Link to="../pages/RecipeList" state={{name: tagLst, select: false}}><Style.SubmitBtn>레시피 찾기</Style.SubmitBtn></Style.Link>
       </Style.Detail>}
       </Style.Wrapper>
     </>
