@@ -56,14 +56,14 @@ const Style = {
     padding: 2vh 0 1vh 0;
   `,
   Lists: styled.div`
-    width: 80vw;
+    width: 70vw;
     display: flex;
     align-items: center;
     justify-content: space-evenly;
     flex-wrap: wrap;
   `,
   Btn: styled.button`
-    width: 20vw;
+    width: 15vw;
     height: 30vh;
     border: none;
     background-color: transparent;
@@ -72,8 +72,8 @@ const Style = {
     }
   `,
   Img: styled.img`
-    width: 15vw;
-    height: 26vh;
+    width: 13vw;
+    height: 22vh;
     text-align: center;
     border-radius: 20px;
     &:hover {
@@ -81,63 +81,161 @@ const Style = {
     }
   `,
   Txt: styled.div`
-    font-size: 22px;
+    font-size: 18px;
     font-family: 'Jua', sans-serif;
+  `,
+  TitleWrap: styled.div`
+    height: 61vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 6vh 0;
+  `,
+  Title: styled.div`
+    font-size: 36px;
+  `,
+  AddImg: styled.img`
+    width: 20vw;
   `,
 };
 
 function RecipeListCtn() {
   const location = useLocation();
   const [viewList, setViewList] = useState([]);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(""); 
 
   const dish = JSON.parse(JSON.stringify(dishData));
   const ingredient = JSON.parse(JSON.stringify(ingredientData));
   const recipe = JSON.parse(JSON.stringify(recipeData));
   
-  let target = location.state.name;
+  const target = location.state.name;
   const select = location.state.select;
-//<Style.Img src={recipe[key]["M_PHO"]}></Style.Img>
+
   const getName = () => {
     let lst = dish[target];
-    for (let i=0; i<lst.length; i++) {
-      let key = lst[i];
+    if(lst) {
+      for (let i=0; i<lst.length; i++) {
+        let key = lst[i];
+        let newData = (
+          <Style.Btn>
+            <Style.Img src={recipe[key]["M_PHO"]}></Style.Img>
+            <Style.Txt>{recipe[key]["DISH"]}</Style.Txt>
+          </Style.Btn>
+        );
+        let element = {
+          id: key, 
+          dishName: recipe[key]["DISH"],
+          value: newData
+        };
+        viewList.push(element);
+      }
+    } else {
       let newData = (
-        <Style.Btn>
-          <Style.Img src={recipe[key]["M_PHO"]}></Style.Img>
-          <Style.Txt>{recipe[key]["DISH"]}</Style.Txt>
-        </Style.Btn>
+        <Style.TitleWrap>
+          <Style.Title>현재 레시피가 존재하지 않습니다.</Style.Title>
+          <Style.AddImg src={img4}></Style.AddImg>
+        </Style.TitleWrap>
       );
       let element = {
-        id: key, 
-        name: recipe[key]["DISH"],
+        id: "404", 
+        dishName: "레시피없음",
         value: newData
       };
       viewList.push(element);
     }
     setViewList(viewList);
-    console.log(viewList);
-    setViewList([]);
+    setSearch(" ");
+  };
 
+  const getIngredients = () => {
+    let lst = [];
+    for (let i=0; i<target.length; i++) {
+      let temp = ingredient[target[i]];
+      if (temp) {
+        lst.push(...temp);
+      }
+    }
+
+    if(lst.length != 0) {
+      for (let i=0; i<lst.length; i++) {
+        let key = lst[i];
+        let newData = (
+          <Style.Btn>
+            <Style.Img src={recipe[key]["M_PHO"]}></Style.Img>
+            <Style.Txt>{recipe[key]["DISH"]}</Style.Txt>
+          </Style.Btn>
+        );
+        let element = {
+          id: key, 
+          dishName: recipe[key]["DISH"],
+          value: newData
+        };
+        viewList.push(element);
+      }
+    } else {
+      let newData = (
+        <Style.TitleWrap>
+          <Style.Title>현재 레시피가 존재하지 않습니다.</Style.Title>
+          <Style.AddImg src={img4}></Style.AddImg>
+        </Style.TitleWrap>
+      );
+      let element = {
+        id: "404", 
+        dishName: "레시피없음",
+        value: newData
+      };
+      viewList.push(element);
+    }
+    setViewList(viewList);
+    setSearch(" ");
+  };
+
+  const searchRecipe = (input) => {
+    setViewList(oldValues => {
+      return oldValues.filter(view => view.dishName == input)
+    })
+    console.log(viewList);
+    if (viewList.length == 0) {
+      let newData = (
+        <Style.TitleWrap>
+          <Style.Title>현재 레시피가 존재하지 않습니다.</Style.Title>
+          <Style.AddImg src={img4}></Style.AddImg>
+        </Style.TitleWrap>
+      );
+      let element = {
+        id: "404", 
+        dishName: "레시피없음",
+        value: newData
+      };
+      viewList.push(element);
+      setViewList(viewList);
+      setSearch(" ");
+    }
+    setSearch(" ");
   };
 
   useEffect(() => {
-    getName();
+    if(select) {
+      getName();
+    } else {
+      getIngredients();
+    }
   }, []);
 
   return (
     <>
       <Style.Wrapper>
         <Style.ContentWrap>
-          <Style.InputWrap>
+          {viewList.length != 1 && <Style.InputWrap>
             <Style.Input
               type="text"
               onChange={(e) => {setSearch(e.target.value)}}
             ></Style.Input>
-            <Style.Link to="../pages/Recipe">
-              <Style.SearchBtn><FontAwesomeIcon icon={faMagnifyingGlass} size="2x" color="#B6E388"/></Style.SearchBtn>
-            </Style.Link>
-          </Style.InputWrap>
+            <Style.SearchBtn
+              onClick={() => {searchRecipe(search)}}
+            ><FontAwesomeIcon icon={faMagnifyingGlass} size="2x" color="#B6E388"/></Style.SearchBtn>
+          </Style.InputWrap>}
 
           <Style.ListWrap>
             <Style.Lists>
@@ -150,9 +248,6 @@ function RecipeListCtn() {
           </Style.ListWrap>
 
         </Style.ContentWrap>
-        
-
-
       </Style.Wrapper>
     </>
   );
