@@ -27,10 +27,12 @@ if opt == 1:	# excel -> json
 
 				# RECP
 				RECP = {}
+				count_r = 0
 				for rc in ast.literal_eval(d[7]):
 					# tip) Á¦°Å
 					if rc[0] == 't':
 						continue
+					count_r += 1
 					e = 0
 					while rc[e] != '.':
 						e += 1
@@ -38,11 +40,16 @@ if opt == 1:	# excel -> json
 
 				# R_PHO
 				R_PHO = {}
+				count_rp = 0
 				for rp in ast.literal_eval(d[8]):
+					count_rp += 1
 					e = 0
 					while rp[e] != '.':
 						e += 1
 					R_PHO[int(rp[ : e])] = rp[e + 2 : ]
+
+				if count_r != count_rp:
+					continue
 
 				data = {
 					'M_PHO'	:	d[1],
