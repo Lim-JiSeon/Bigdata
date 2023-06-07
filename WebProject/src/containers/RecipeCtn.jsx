@@ -1,13 +1,12 @@
 import styled from "styled-components";
 
-function RecipeCtn() {
-    
-  const Style = {
-    Wrapper: styled.div`
-      flex: 1;
-    `,
-  }  
+const Style = {
+  Wrapper: styled.div`
+    flex: 1;
+  `,
+}; 
 
+function RecipeCtn() { 
   return (
     <>
       <Style.Wrapper>
