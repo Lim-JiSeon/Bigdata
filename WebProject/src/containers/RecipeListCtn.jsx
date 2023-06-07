@@ -12,8 +12,7 @@ function RecipeListCtn() {
   const location = useLocation();
   const dishName = JSON.parse(JSON.stringify(dishData));
 
-  console.log(dishName[location.state.dish]);
-  console.log(dishName["\ubcf6\uc74c"]);
+  
 
   return (
     <>

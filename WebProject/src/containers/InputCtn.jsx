@@ -112,7 +112,6 @@ function InputCtn() {
   const createTag = () => {
     tagLst.push(tagTxt);
     setTagLst(tagLst);
-    console.log("실행");
     let newTag = (
       <Style.Tag key={tagBlocks.length}>
         <Style.DelBtn onClick={() => deleteTag(tagTxt)}><FontAwesomeIcon icon={faXmark} color="#FFFFFF" /></Style.DelBtn>
@@ -125,6 +124,7 @@ function InputCtn() {
     };
     tagBlocks.push(element);
     setTagBlocks(tagBlocks);
+    setTagTxt("");
   };
 
   const deleteTag = (id) => {
@@ -174,7 +174,7 @@ function InputCtn() {
           </Style.Tags>
         </Style.TagWrap>
         <Style.Img2 src="https://o.remove.bg/downloads/b7ec8e7b-101f-49bb-8096-979fec9f936d/image-removebg-preview.png"></Style.Img2>
-        <Style.Link to="../pages/RecipeList" state={{name: dish}}><Style.SubmitBtn>레시피 찾기</Style.SubmitBtn></Style.Link>
+        <Style.Link to="../pages/RecipeList" state={{name: tagLst}}><Style.SubmitBtn>레시피 찾기</Style.SubmitBtn></Style.Link>
       </Style.Detail>}
       </Style.Wrapper>
     </>
