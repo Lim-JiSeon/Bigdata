@@ -118,7 +118,7 @@ const Style = {
   Content: styled.div`
     width: 35vw;
     height: 15vh;
-    font-size: 18px;
+    font-size: 22px;
     border: 3px solid #C7F2A4;
     border-radius: 0 20px 20px 20px;
     padding: 1vh 1vw;
@@ -165,7 +165,8 @@ function RecipeCtn() {
 
   useEffect(() => {
     getData();
-    console.log(recipe[target])
+    console.log(recipe[target]["INGR"]);
+    console.log(recipe[target]["COND"])
   }, []);
 
   return (
