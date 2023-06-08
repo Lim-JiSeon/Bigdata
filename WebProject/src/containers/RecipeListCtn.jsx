@@ -105,6 +105,7 @@ function RecipeListCtn() {
   const location = useLocation();
   const [viewList, setViewList] = useState([]);
   const [search, setSearch] = useState(""); 
+  const [test, setTest] = useState("");
 
   const dish = JSON.parse(JSON.stringify(dishData));
   const ingredient = JSON.parse(JSON.stringify(ingredientData));
@@ -148,7 +149,7 @@ function RecipeListCtn() {
       viewList.push(element);
     }
     setViewList(viewList);
-    setSearch(" ");
+    setTest("음식명 완료");
   };
 
   const getIngredients = () => {
@@ -193,10 +194,13 @@ function RecipeListCtn() {
       viewList.push(element);
     }
     setViewList(viewList);
-    setSearch(" ");
+    setTest("식재료 완료");
   };
 
   const searchRecipe = (input) => {
+    setViewList(oldValues => {
+      return oldValues.filter(view => view.dishName == input)
+    })
     setViewList(oldValues => {
       return oldValues.filter(view => view.dishName == input)
     })
@@ -215,9 +219,8 @@ function RecipeListCtn() {
       };
       viewList.push(element);
       setViewList(viewList);
-      setSearch(" ");
     }
-    setSearch(" ");
+    setTest("검색 완료");
   };
 
   useEffect(() => {

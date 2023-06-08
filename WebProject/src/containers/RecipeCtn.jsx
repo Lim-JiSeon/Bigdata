@@ -192,7 +192,7 @@ function RecipeCtn() {
               </Style.SubWrap>
               <Style.SubWrap>
                 <Style.SubTitle>요리 양(인분)</Style.SubTitle>
-                <Style.SubContent>{recipe[target]["QUAN"]}</Style.SubContent>
+                <Style.SubContent>{recipe[target]["QAUN"]}</Style.SubContent>
               </Style.SubWrap>
               <Style.SubWrap>
                 <Style.SubTitle>요리 식재료</Style.SubTitle>
