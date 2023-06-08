@@ -53,7 +53,8 @@ const Style = {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2vh 0 1vh 0;
+    padding: 10vh 0 10vh 0;
+    margin-bottom: 25vh;
   `,
   Lists: styled.div`
     width: 70vw;
@@ -118,10 +119,12 @@ function RecipeListCtn() {
       for (let i=0; i<lst.length; i++) {
         let key = lst[i];
         let newData = (
-          <Style.Btn>
-            <Style.Img src={recipe[key]["M_PHO"]}></Style.Img>
-            <Style.Txt>{recipe[key]["DISH"]}</Style.Txt>
-          </Style.Btn>
+          <Style.Link to="../pages/Recipe" state={{code: key}}>
+            <Style.Btn>
+              <Style.Img src={recipe[key]["M_PHO"]}></Style.Img>
+              <Style.Txt>{recipe[key]["DISH"]}</Style.Txt>
+            </Style.Btn>
+          </Style.Link>
         );
         let element = {
           id: key, 
@@ -157,14 +160,16 @@ function RecipeListCtn() {
       }
     }
 
-    if(lst.length != 0) {
+    if(lst) {
       for (let i=0; i<lst.length; i++) {
         let key = lst[i];
         let newData = (
-          <Style.Btn>
-            <Style.Img src={recipe[key]["M_PHO"]}></Style.Img>
-            <Style.Txt>{recipe[key]["DISH"]}</Style.Txt>
-          </Style.Btn>
+          <Style.Link to="../pages/Recipe" state={{code: key}}>
+            <Style.Btn>
+              <Style.Img src={recipe[key]["M_PHO"]}></Style.Img>
+              <Style.Txt>{recipe[key]["DISH"]}</Style.Txt>
+            </Style.Btn>
+          </Style.Link>
         );
         let element = {
           id: key, 
